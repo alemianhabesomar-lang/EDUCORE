@@ -96,7 +96,7 @@
             position: relative;
         }
 
-        /* --- ULTRA LOADING SCREEN --- */
+        /* --- ULTRA UPGRADED LOADING SCREEN --- */
         #loader {
             position: fixed;
             inset: 0;
@@ -104,173 +104,397 @@
             justify-content: center;
             align-items: center;
             z-index: 99999;
-            background: var(--deep-blue);
-            transition: all 1.5s cubic-bezier(0.9, 0, 0.1, 1);
+            background: linear-gradient(135deg, #050b1a 0%, #0a1628 50%, #112240 100%);
+            transition: all 1.8s cubic-bezier(0.9, 0, 0.1, 1);
+            opacity: 1;
+            visibility: visible;
         }
 
+        #loader.hidden {
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+        }
+
+        /* Animated Grid Background */
         .grid-overlay {
             position: absolute;
             inset: 0;
             background-image:
-                linear-gradient(rgba(0, 242, 255, 0.05) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(0, 242, 255, 0.05) 1px, transparent 1px);
-            background-size: 40px 40px;
-            transform: perspective(500px) rotateX(60deg) translateY(-100px);
-            animation: gridScroll 10s linear infinite;
+                linear-gradient(rgba(0, 242, 255, 0.08) 2px, transparent 2px),
+                linear-gradient(90deg, rgba(0, 242, 255, 0.08) 2px, transparent 2px);
+            background-size: 50px 50px;
+            transform: perspective(800px) rotateX(60deg) translateY(-150px);
+            animation: gridScroll 15s linear infinite;
+            opacity: 0;
+            animation: gridFadeIn 1s ease-out forwards, gridScroll 15s linear infinite;
         }
 
+        @keyframes gridFadeIn {
+            to { opacity: 1; }
+        }
+
+        /* Particle System */
+        .particle-system {
+            position: absolute;
+            inset: 0;
+            overflow: hidden;
+        }
+
+        .loading-particle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: var(--cyan);
+            border-radius: 50%;
+            box-shadow: 0 0 20px var(--cyan), 0 0 40px var(--cyan);
+            animation: particleFloat 8s infinite ease-in-out;
+        }
+
+        @keyframes particleFloat {
+            0%, 100% {
+                transform: translate(0, 0) scale(1);
+                opacity: 0;
+            }
+            10% {
+                opacity: 1;
+            }
+            90% {
+                opacity: 1;
+            }
+            100% {
+                transform: translate(var(--tx), var(--ty)) scale(0);
+                opacity: 0;
+            }
+        }
+
+        /* HUD Elements with smooth animations */
         .hud-element {
             position: absolute;
             color: var(--cyan);
-            font-size: 10px;
+            font-size: 11px;
             text-transform: uppercase;
-            letter-spacing: 2px;
-            opacity: 0.6;
+            letter-spacing: 2.5px;
+            opacity: 0;
             font-family: 'Courier New', monospace;
+            animation: hudFadeIn 0.8s ease-out forwards;
+            text-shadow: 0 0 10px rgba(0, 242, 255, 0.5);
         }
         
         .top-left { 
-            top: 20px; 
-            left: 20px; 
-            border-left: 2px solid; 
-            border-top: 2px solid; 
-            padding: 10px; 
+            top: 30px; 
+            left: 30px; 
+            border-left: 3px solid var(--cyan); 
+            border-top: 3px solid var(--cyan); 
+            padding: 15px;
+            animation-delay: 0.3s;
         }
         
         .bottom-right { 
-            bottom: 20px; 
-            right: 20px; 
-            border-right: 2px solid; 
-            border-bottom: 2px solid; 
-            padding: 10px; 
+            bottom: 30px; 
+            right: 30px; 
+            border-right: 3px solid var(--neon-pink); 
+            border-bottom: 3px solid var(--neon-pink); 
+            padding: 15px;
+            animation-delay: 0.5s;
         }
 
+        @keyframes hudFadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 0.7;
+                transform: translateY(0);
+            }
+        }
+
+        /* Enhanced Log Stream */
         .log-stream {
             position: absolute;
-            left: 20px;
-            top: 100px;
-            width: 200px;
-            height: 300px;
-            font-size: 9px;
+            left: 30px;
+            top: 120px;
+            width: 250px;
+            height: 350px;
+            font-size: 10px;
             color: var(--cyan);
             overflow: hidden;
-            mask-image: linear-gradient(to bottom, white, transparent);
+            mask-image: linear-gradient(to bottom, transparent, white 20%, white 80%, transparent);
             font-family: 'Courier New', monospace;
+            opacity: 0;
+            animation: logFadeIn 1s ease-out 0.7s forwards;
         }
 
+        @keyframes logFadeIn {
+            to { opacity: 0.6; }
+        }
+
+        .log-stream div {
+            margin-bottom: 8px;
+            animation: logSlideIn 0.5s ease-out;
+        }
+
+        @keyframes logSlideIn {
+            from {
+                opacity: 0;
+                transform: translateX(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        /* Central Core System */
         .central-core {
             position: relative;
             z-index: 10;
             display: flex;
             flex-direction: column;
             align-items: center;
+            opacity: 0;
+            animation: coreAppear 1.2s ease-out 0.5s forwards;
         }
 
+        @keyframes coreAppear {
+            to {
+                opacity: 1;
+            }
+        }
+
+        /* Enhanced Orbit System */
         .orbit-system {
-            width: 250px;
-            height: 250px;
+            width: 300px;
+            height: 300px;
             position: relative;
             display: flex;
             justify-content: center;
             align-items: center;
+            filter: drop-shadow(0 0 50px rgba(0, 242, 255, 0.3));
         }
 
         .orbit {
             position: absolute;
-            border: 1px solid rgba(0, 242, 255, 0.1);
+            border: 1px solid rgba(0, 242, 255, 0.15);
             border-radius: 50%;
-            animation: rotate 15s linear infinite;
+            animation: rotate 20s linear infinite;
         }
         
         .orbit-1 { 
             width: 100%; 
             height: 100%; 
-            border-top: 2px solid var(--cyan); 
-            box-shadow: 0 0 20px var(--cyan); 
+            border-top: 3px solid var(--cyan);
+            border-right: 3px solid transparent;
+            box-shadow: 0 0 30px var(--cyan), inset 0 0 30px rgba(0, 242, 255, 0.1);
+            animation-duration: 20s;
         }
         
         .orbit-2 { 
             width: 75%; 
             height: 75%; 
-            border-bottom: 2px solid var(--neon-pink); 
-            animation-duration: 8s; 
-            animation-direction: reverse; 
+            border-bottom: 3px solid var(--neon-pink);
+            border-left: 3px solid transparent;
+            box-shadow: 0 0 20px var(--neon-pink);
+            animation-duration: 12s;
+            animation-direction: reverse;
         }
 
+        .orbit-3 { 
+            width: 50%; 
+            height: 50%; 
+            border: 2px solid rgba(135, 206, 235, 0.4);
+            animation-duration: 8s;
+        }
+
+        /* Enhanced Logo */
         .logo-text {
-            font-size: 3.5rem;
+            font-size: 4rem;
             font-weight: 900;
-            letter-spacing: 10px;
-            text-shadow: 0 0 20px var(--cyan);
-            animation: pulse 2s infinite ease-in-out;
+            letter-spacing: 12px;
+            background: linear-gradient(135deg, var(--cyan) 0%, #ffffff 50%, var(--neon-pink) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: logoGlow 3s infinite ease-in-out, logoPulse 2s infinite ease-in-out;
             font-family: 'Cairo', sans-serif;
-            color: white;
+            filter: drop-shadow(0 0 30px rgba(0, 242, 255, 0.6));
+            position: relative;
         }
 
+        .logo-text::before {
+            content: 'EDUCORE';
+            position: absolute;
+            left: 0;
+            top: 0;
+            z-index: -1;
+            filter: blur(20px);
+            opacity: 0.5;
+        }
+
+        @keyframes logoGlow {
+            0%, 100% {
+                filter: drop-shadow(0 0 30px rgba(0, 242, 255, 0.6)) 
+                        drop-shadow(0 0 60px rgba(0, 242, 255, 0.4));
+            }
+            50% {
+                filter: drop-shadow(0 0 50px rgba(255, 0, 234, 0.8)) 
+                        drop-shadow(0 0 80px rgba(255, 0, 234, 0.5));
+            }
+        }
+
+        @keyframes logoPulse {
+            0%, 100% { 
+                transform: scale(1); 
+            }
+            50% { 
+                transform: scale(1.05); 
+            }
+        }
+
+        /* Upgraded Terminal */
         .terminal {
-            width: 450px;
-            background: var(--glass);
-            border: 1px solid rgba(0, 242, 255, 0.3);
-            margin-top: 30px;
-            backdrop-filter: blur(10px);
-            padding: 20px;
-            box-shadow: 0 0 50px rgba(0,0,0,0.5);
+            width: 500px;
+            background: rgba(10, 18, 48, 0.9);
+            border: 2px solid rgba(0, 242, 255, 0.4);
+            margin-top: 40px;
+            backdrop-filter: blur(20px);
+            padding: 25px;
+            box-shadow: 0 0 60px rgba(0, 242, 255, 0.3), 
+                        inset 0 0 40px rgba(0, 242, 255, 0.05);
             font-family: 'Courier New', monospace;
+            border-radius: 10px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .terminal::before {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            background: linear-gradient(45deg, var(--cyan), var(--neon-pink), var(--cyan));
+            border-radius: 10px;
+            z-index: -1;
+            opacity: 0;
+            animation: terminalGlow 3s infinite;
+        }
+
+        @keyframes terminalGlow {
+            0%, 100% { opacity: 0; }
+            50% { opacity: 0.5; }
+        }
+
+        .terminal-header {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 20px;
+        }
+
+        .terminal-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            animation: dotPulse 2s infinite ease-in-out;
+        }
+
+        .dot-red { background: #ff5f56; animation-delay: 0s; }
+        .dot-yellow { background: #ffbd2e; animation-delay: 0.3s; }
+        .dot-green { background: #27c93f; animation-delay: 0.6s; }
+
+        @keyframes dotPulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.6; transform: scale(0.9); }
         }
 
         .status-header {
             display: flex;
             justify-content: space-between;
-            font-size: 11px;
-            margin-bottom: 15px;
+            font-size: 12px;
+            margin-bottom: 18px;
             color: var(--cyan);
+            font-weight: 600;
         }
 
+        #statusText {
+            animation: textFlicker 0.5s infinite;
+        }
+
+        @keyframes textFlicker {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.8; }
+        }
+
+        /* Enhanced Progress Bar */
         .progress-bar-container {
             width: 100%;
-            height: 4px;
-            background: rgba(255,255,255,0.05);
+            height: 6px;
+            background: rgba(255,255,255,0.08);
             position: relative;
             overflow: hidden;
+            border-radius: 3px;
+            box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.5);
         }
 
         .progress-bar-fill {
             position: absolute;
             height: 100%;
             width: 0%;
-            background: linear-gradient(90deg, var(--neon-pink), var(--cyan));
-            box-shadow: 0 0 15px var(--cyan);
-            transition: width 0.1s linear;
+            background: linear-gradient(90deg, var(--neon-pink), var(--cyan), var(--neon-pink));
+            background-size: 200% 100%;
+            box-shadow: 0 0 20px var(--cyan), 0 0 40px var(--cyan);
+            transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border-radius: 3px;
+            animation: progressShine 2s infinite linear;
+        }
+
+        @keyframes progressShine {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
         }
 
         .meta-data {
             display: flex;
             justify-content: space-between;
-            margin-top: 15px;
-            font-size: 12px;
-            color: #556688;
+            margin-top: 18px;
+            font-size: 11px;
+            color: #7a9ac2;
+            font-weight: 500;
         }
 
         @keyframes gridScroll { 
             from { background-position: 0 0; } 
-            to { background-position: 0 40px; } 
+            to { background-position: 0 50px; } 
         }
         
         @keyframes rotate { 
             from { transform: rotate(0deg); } 
             to { transform: rotate(360deg); } 
         }
-        
-        @keyframes pulse { 
-            0%, 100% { transform: scale(1); opacity: 1; } 
-            50% { transform: scale(1.05); opacity: 0.8; } 
+
+        /* Smooth Exit Animation */
+        .loader-exit {
+            animation: loaderFadeOut 1.8s cubic-bezier(0.9, 0, 0.1, 1) forwards;
         }
 
-        .loader-exit {
-            transform: scale(2);
-            filter: brightness(10) blur(50px);
-            opacity: 0;
-            pointer-events: none;
+        @keyframes loaderFadeOut {
+            0% {
+                opacity: 1;
+                transform: scale(1);
+                filter: blur(0px) brightness(1);
+            }
+            50% {
+                opacity: 0.5;
+                transform: scale(1.1);
+                filter: blur(5px) brightness(1.5);
+            }
+            100% {
+                opacity: 0;
+                transform: scale(1.5);
+                filter: blur(20px) brightness(3);
+            }
         }
 
         /* --- ANIMATED BACKGROUND --- */
@@ -398,7 +622,7 @@
             align-items: center;
             justify-content: center;
             box-shadow: 0 10px 30px var(--shadow-blue);
-            animation: logoGlow 4s ease-in-out infinite;
+            animation: logoGlowNav 4s ease-in-out infinite;
             position: relative;
         }
 
@@ -420,7 +644,7 @@
             filter: drop-shadow(0 2px 8px rgba(0,0,0,0.2));
         }
 
-        @keyframes logoGlow {
+        @keyframes logoGlowNav {
             0%, 100% { 
                 transform: scale(1); 
                 box-shadow: 0 10px 30px var(--shadow-blue);
@@ -1686,16 +1910,27 @@
             /* Loading screen responsive */
             .terminal {
                 width: 90%;
-                max-width: 400px;
+                max-width: 450px;
+                padding: 20px;
             }
 
             .orbit-system {
-                width: 200px;
-                height: 200px;
+                width: 220px;
+                height: 220px;
             }
 
             .logo-text {
-                font-size: 2.5rem;
+                font-size: 2.8rem;
+                letter-spacing: 8px;
+            }
+
+            .hud-element {
+                font-size: 9px;
+            }
+
+            .log-stream {
+                width: 200px;
+                font-size: 8px;
             }
         }
 
@@ -1730,13 +1965,21 @@
             }
 
             .logo-text {
-                font-size: 2rem;
-                letter-spacing: 5px;
+                font-size: 2.2rem;
+                letter-spacing: 6px;
             }
 
             .orbit-system {
-                width: 150px;
-                height: 150px;
+                width: 180px;
+                height: 180px;
+            }
+
+            .hud-element {
+                display: none;
+            }
+
+            .log-stream {
+                display: none;
             }
         }
 
@@ -1786,9 +2029,12 @@
     <!-- ULTRA LOADING SCREEN -->
     <div id="loader">
         <div class="grid-overlay"></div>
+        
+        <!-- Particle System -->
+        <div class="particle-system" id="particleSystem"></div>
        
-        <div class="hud-element top-left">Protocol: EDU_ALPHA_01<br>Status: Encrypting</div>
-        <div class="hud-element bottom-right">© 2026 EDUCORE NEURAL<br>v. 9.0.4</div>
+        <div class="hud-element top-left">Protocol: EDU_ALPHA_01<br>Status: Initializing System</div>
+        <div class="hud-element bottom-right">© 2026 EDUCORE NEURAL<br>v. 9.0.4 STABLE</div>
 
         <div class="log-stream" id="logStream"></div>
 
@@ -1796,10 +2042,16 @@
             <div class="orbit-system">
                 <div class="orbit orbit-1"></div>
                 <div class="orbit orbit-2"></div>
+                <div class="orbit orbit-3"></div>
                 <div class="logo-text">EDUCORE</div>
             </div>
 
             <div class="terminal">
+                <div class="terminal-header">
+                    <div class="terminal-dot dot-red"></div>
+                    <div class="terminal-dot dot-yellow"></div>
+                    <div class="terminal-dot dot-green"></div>
+                </div>
                 <div class="status-header">
                     <span id="statusText">INITIALIZING_SYSTEM...</span>
                     <span id="percentText">0%</span>
@@ -1808,7 +2060,7 @@
                     <div class="progress-bar-fill" id="progressBar"></div>
                 </div>
                 <div class="meta-data">
-                    <span id="timerText">00:30:00</span>
+                    <span id="timerText">00:05:00</span>
                     <span>SECURE_BOOT_ACTIVE</span>
                 </div>
             </div>
@@ -1896,7 +2148,7 @@
             <li><a href="partys.html"><i class="fas fa-microphone-alt"></i> الغرف الصوتية</a></li>
             <li><a href="questions.html"><i class="fas fa-comment-dots"></i> قسم الاستفسارات</a></li>
             <li><a href="family.html"><i class="fas fa-person"></i>توعية في الرقابة الابوية</a></li>
-            <li><a href="support.html"><i class="fas fa-shield-halved"></i> حقوق النشر</a></li>
+            <li><a href="support.html"><i class="fas fa-headset"></i>الدعم الفني</a></li>
             <li id="logoutBtn"><a href="#" onclick="logout()"><i class="fas fa-power-off"></i> تسجيل خروج</a></li>
         </ul>
     </nav>
@@ -2064,6 +2316,9 @@
                 <p><i class="fas fa-map-marker-alt"></i> عمان، الأردن</p>
             </div>
         </div>
+        <div class="footer-bottom">
+            <p>© 2026 Educore. جميع الحقوق محفوظة</p>
+        </div>
     </footer>
 
     <!-- Scroll to Top Button -->
@@ -2072,39 +2327,63 @@
     </div>
 
     <script>
-        // ULTRA LOADING SCRIPT
-        const steps = [
-            "BOOTING CORE...",
-            "LOADING DATABASE...",
-            "DECRYPTING ASSETS...",
-            "VIRTUALIZING UI...",
-            "SYNCING NEURAL NETS...",
-            "FINALIZING...",
-            "ACCESS GRANTED"
-        ];
+        // ========================================
+        // FIRST-VISIT LOADING SCREEN HANDLER
+        // ========================================
+        
+        // Check if this is the first visit
+        const hasVisited = sessionStorage.getItem('hasVisitedEducore');
+        const loader = document.getElementById('loader');
+        
+        if (hasVisited) {
+            // Not first visit - hide loader immediately
+            loader.classList.add('hidden');
+        } else {
+            // First visit - show loading animation
+            sessionStorage.setItem('hasVisitedEducore', 'true');
+            startLoadingSequence();
+        }
 
-        const logCommands = [
-            "fetching api/v1/core...",
-            "allocating memory pool...",
-            "checksum verification: OK",
-            "establishing socket...",
-            "handshake: success",
-            "loading shaders...",
-            "buffer flush..."
-        ];
+        function startLoadingSequence() {
+            // Create particle system
+            createParticles();
+            
+            // Loading steps with smoother transitions
+            const steps = [
+                "BOOTING CORE SYSTEMS...",
+                "LOADING DATABASE...",
+                "DECRYPTING ASSETS...",
+                "VIRTUALIZING UI COMPONENTS...",
+                "SYNCING NEURAL NETWORKS...",
+                "OPTIMIZING PERFORMANCE...",
+                "FINALIZING SETUP...",
+                "ACCESS GRANTED ✓"
+            ];
 
-        let progress = 0;
-        const duration = 5000; // 5 seconds
-        const interval = 50;
-        const increment = (100 / (duration / interval));
+            const logCommands = [
+                "> fetching api/v1/core...",
+                "> allocating memory pool...",
+                "> checksum verification: OK",
+                "> establishing secure socket...",
+                "> TLS handshake: success",
+                "> loading shader programs...",
+                "> buffer flush complete",
+                "> initializing renderer...",
+                "> compiling assets...",
+                "> cache warming...",
+                "> system ready"
+            ];
 
-        const startLoading = () => {
+            let progress = 0;
+            const duration = 5000; // 5 seconds for smooth experience
+            const interval = 30; // Smoother updates
+            const increment = (100 / (duration / interval));
+
             const bar = document.getElementById('progressBar');
             const percent = document.getElementById('percentText');
             const status = document.getElementById('statusText');
             const timer = document.getElementById('timerText');
             const logs = document.getElementById('logStream');
-            const loader = document.getElementById('loader');
 
             const loadingTimer = setInterval(() => {
                 progress += increment;
@@ -2113,34 +2392,64 @@
                     progress = 100;
                     clearInterval(loadingTimer);
                    
+                    // Smooth exit sequence
                     setTimeout(() => {
                         loader.classList.add('loader-exit');
                         setTimeout(() => {
-                            loader.style.display = 'none';
-                        }, 1500);
-                    }, 500);
+                            loader.classList.add('hidden');
+                        }, 1800);
+                    }, 300);
                 }
 
+                // Update progress bar with smooth animation
                 bar.style.width = progress + "%";
                 percent.innerText = Math.floor(progress) + "%";
                
-                let timeLeft = ((duration - (progress * duration / 100)) / 1000).toFixed(2);
-                timer.innerText = `00:${timeLeft.replace('.', ':')}`;
+                // Update timer
+                let timeLeft = Math.max(0, ((duration - (progress * duration / 100)) / 1000)).toFixed(2);
+                let seconds = Math.floor(timeLeft);
+                let milliseconds = Math.floor((timeLeft % 1) * 100);
+                timer.innerText = `00:0${seconds}:${milliseconds.toString().padStart(2, '0')}`;
 
+                // Update status text
                 let stepIdx = Math.floor((progress / 100) * steps.length);
                 status.innerText = steps[Math.min(stepIdx, steps.length - 1)];
 
-                if (Math.random() > 0.9) {
+                // Add log entries with smoother timing
+                if (Math.random() > 0.85) {
                     let log = document.createElement('div');
-                    log.innerText = `> ${logCommands[Math.floor(Math.random() * logCommands.length)]}`;
-                    logs.prepend(log);
+                    log.innerText = logCommands[Math.floor(Math.random() * logCommands.length)];
+                    logs.insertBefore(log, logs.firstChild);
+                    
+                    // Remove old logs to prevent overflow
+                    if (logs.children.length > 15) {
+                        logs.removeChild(logs.lastChild);
+                    }
                 }
             }, interval);
-        };
+        }
 
-        window.addEventListener('load', startLoading);
+        // Create animated particles for loading screen
+        function createParticles() {
+            const particleSystem = document.getElementById('particleSystem');
+            const particleCount = 30;
+            
+            for (let i = 0; i < particleCount; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'loading-particle';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.top = Math.random() * 100 + '%';
+                particle.style.setProperty('--tx', (Math.random() - 0.5) * 800 + 'px');
+                particle.style.setProperty('--ty', (Math.random() - 0.5) * 800 + 'px');
+                particle.style.animationDelay = Math.random() * 8 + 's';
+                particle.style.animationDuration = (6 + Math.random() * 4) + 's';
+                particleSystem.appendChild(particle);
+            }
+        }
 
-        // Navbar scroll effect
+        // ========================================
+        // NAVBAR SCROLL EFFECT
+        // ========================================
         let lastScroll = 0;
         window.addEventListener('scroll', function() {
             const navbar = document.getElementById('navbar');
@@ -2162,6 +2471,9 @@
             lastScroll = currentScroll;
         }, { passive: true });
 
+        // ========================================
+        // MENU FUNCTIONS
+        // ========================================
         function toggleMenu() {
             const sideNav = document.getElementById("sideNav");
             const overlay = document.getElementById("overlay-bg");
@@ -2191,8 +2503,12 @@
 
         function logout() {
             if (confirm("هل أنت متأكد من تسجيل الخروج؟")) {
+                // Clear the session storage
+                sessionStorage.removeItem('hasVisitedEducore');
+                
+                // Show loader again
                 const loader = document.getElementById('loader');
-                loader.style.display = 'flex';
+                loader.classList.remove('hidden');
                 loader.classList.remove('loader-exit');
                 
                 setTimeout(() => {
@@ -2202,6 +2518,9 @@
             }
         }
 
+        // ========================================
+        // IMAGE ERROR HANDLING
+        // ========================================
         window.addEventListener('load', function() {
             const images = document.querySelectorAll('.card-img');
             images.forEach(img => {
@@ -2211,6 +2530,9 @@
             });
         });
 
+        // ========================================
+        // SMOOTH SCROLLING FOR ANCHORS
+        // ========================================
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {
             anchor.addEventListener('click', function (e) {
                 e.preventDefault();
@@ -2224,7 +2546,11 @@
             });
         });
 
+        // ========================================
+        // KEYBOARD SHORTCUTS
+        // ========================================
         document.addEventListener('keydown', function(e) {
+            // ESC key closes menu
             if (e.key === 'Escape') {
                 const sideNav = document.getElementById("sideNav");
                 const overlay = document.getElementById("overlay-bg");
@@ -2239,6 +2565,9 @@
             }
         });
 
+        // ========================================
+        // INTERSECTION OBSERVER FOR ANIMATIONS
+        // ========================================
         const observerOptions = {
             threshold: 0.15,
             rootMargin: '0px 0px -60px 0px'
@@ -2257,6 +2586,9 @@
             observer.observe(card);
         });
 
+        // ========================================
+        // PARALLAX EFFECT FOR HERO
+        // ========================================
         window.addEventListener('scroll', function() {
             const scrolled = window.pageYOffset;
             const hero = document.querySelector('.hero-content');
@@ -2266,6 +2598,9 @@
             }
         }, { passive: true });
 
+        // ========================================
+        // 3D TILT EFFECT FOR CARDS (Desktop only)
+        // ========================================
         if (window.matchMedia("(hover: hover) and (pointer: fine)").matches) {
             document.querySelectorAll('.card').forEach(card => {
                 card.addEventListener('mousemove', function(e) {
@@ -2288,6 +2623,9 @@
             });
         }
 
+        // ========================================
+        // TOUCH SUPPORT FOR MOBILE
+        // ========================================
         if ('ontouchstart' in window) {
             document.querySelectorAll('.card').forEach(card => {
                 card.addEventListener('touchstart', function() {
@@ -2300,6 +2638,9 @@
             });
         }
 
+        // ========================================
+        // SWIPE TO CLOSE SIDEBAR
+        // ========================================
         let touchStartX = 0;
         const sideNav = document.getElementById('sideNav');
         
@@ -2314,12 +2655,17 @@
             }
         }, { passive: true });
 
+        // ========================================
+        // PERFORMANCE OPTIMIZATION
+        // ========================================
+        // Smooth transitions for interactive elements
         document.querySelectorAll('.cta-btn, .stat-card, .card').forEach(element => {
             element.addEventListener('mouseenter', function() {
                 this.style.transition = 'all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1)';
             });
         });
 
+        // Lazy load images
         if ('IntersectionObserver' in window) {
             const imageObserver = new IntersectionObserver((entries, observer) => {
                 entries.forEach(entry => {
@@ -2333,6 +2679,10 @@
 
             document.querySelectorAll('.card-img').forEach(img => imageObserver.observe(img));
         }
+
+        // Console welcome message
+        console.log('%c🎓 Welcome to EDUCORE! ', 'background: linear-gradient(135deg, #4a90e2, #87ceeb); color: white; font-size: 20px; padding: 10px 20px; border-radius: 10px;');
+        console.log('%cBuilt with ❤️ for the future of education', 'color: #4a90e2; font-size: 14px; font-weight: bold;');
     </script>
 </body>
-</html>3
+</html>
