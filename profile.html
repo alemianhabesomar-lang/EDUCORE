@@ -1,755 +1,967 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html lang="ar" dir="rtl" data-lang="ar">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>EDUCORE | MEGA OS V5.0 - نظام التواصل</title>
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-    <style>
-        :root {
-            --p: #00f2fe; --s: #4facfe; --bg: #010409; --card: rgba(13, 17, 23, 0.9);
-            --neon: 0 0 25px rgba(0, 242, 254, 0.5); --border: rgba(255, 255, 255, 0.1);
-            --gold: #ffcc00; --red: #ff4d4d; --green: #238636;
-        }
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Cairo', sans-serif; }
-        body { background: var(--bg); color: #e6edf3; min-height: 100vh; overflow-x: hidden; }
-        #particles-js { position: fixed; width: 100%; height: 100%; z-index: 1; pointer-events: none; }
-        .toast-area { position: fixed; bottom: 20px; left: 20px; z-index: 9999; display: flex; flex-direction: column; gap: 10px; }
-        .toast { background: var(--card); border-right: 5px solid var(--p); padding: 15px 25px; border-radius: 12px; box-shadow: 0 10px 40px rgba(0,0,0,0.6); animation: slideIn 0.4s forwards; min-width: 280px; }
-        @keyframes slideIn { from { transform: translateX(-120%); } to { transform: translateX(0); } }
-        .layout { position: relative; z-index: 10; display: grid; grid-template-columns: 320px 1fr 320px; gap: 20px; padding: 25px; max-width: 1750px; margin: auto; }
-        .panel { background: var(--card); backdrop-filter: blur(25px); border: 1px solid var(--border); border-radius: 28px; padding: 25px; height: fit-content; box-shadow: 0 15px 45px rgba(0,0,0,0.4); }
-        .u-box { text-align: center; margin-bottom: 25px; }
-        .u-avatar-wrap { position: relative; width: 140px; height: 140px; margin: 0 auto 15px; cursor: pointer; }
-        .u-avatar-wrap img { width: 100%; height: 100%; border-radius: 50%; border: 4px solid var(--p); box-shadow: var(--neon); object-fit: cover; transition: 0.3s; }
-        .u-avatar-wrap:hover img { filter: brightness(1.2) scale(1.05); }
-        .online-dot { position: absolute; bottom: 10px; right: 10px; width: 18px; height: 18px; background: var(--green); border: 3px solid var(--bg); border-radius: 50%; animation: pulse 2s infinite; }
-        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
-        .nav-os { display: flex; flex-direction: column; gap: 8px; }
-        .nav-link { padding: 15px 20px; border-radius: 15px; cursor: pointer; display: flex; align-items: center; gap: 12px; color: #8b949e; font-weight: 700; transition: 0.3s; position: relative; }
-        .nav-link.active { background: rgba(0, 242, 254, 0.1); color: var(--p); border: 1px solid var(--p); }
-        .nav-link:hover { background: rgba(255, 255, 255, 0.05); }
-        .badge-notif { position: absolute; top: 10px; left: 10px; background: var(--red); color: #fff; border-radius: 50%; width: 22px; height: 22px; display: flex; align-items: center; justify-content: center; font-size: 0.7rem; font-weight: 900; animation: bounce 0.5s infinite; }
-        @keyframes bounce { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.2); } }
-        .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin-bottom: 20px; }
-        .stat-mini { background: rgba(255,255,255,0.03); padding: 20px; border-radius: 20px; border: 1px solid var(--border); text-align: center; }
-        .stat-mini h2 { color: var(--p); font-size: 1.6rem; }
-        .xp-track { height: 14px; background: #161b22; border-radius: 20px; overflow: hidden; border: 1px solid var(--border); }
-        .xp-bar { height: 100%; background: linear-gradient(90deg, var(--p), var(--s)); width: 0%; transition: 1.5s cubic-bezier(0.17, 0.67, 0.83, 0.67); }
-        .market-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 15px; }
-        .item-card { background: rgba(0,0,0,0.3); padding: 15px; border-radius: 18px; border: 1px solid var(--border); text-align: center; transition: 0.3s; }
-        .item-card:hover { border-color: var(--p); transform: scale(1.02); }
-        .form-row { margin-bottom: 20px; }
-        .form-label { display: block; font-size: 0.8rem; color: var(--p); font-weight: bold; margin-bottom: 8px; }
-        .form-input { width: 100%; padding: 14px; background: #0d1117; border: 1px solid var(--border); border-radius: 15px; color: #fff; outline: none; transition: 0.3s; }
-        .form-input:focus { border-color: var(--p); box-shadow: 0 0 10px rgba(0,242,254,0.1); }
-        .btn-action { width: 100%; padding: 16px; border-radius: 16px; border: none; background: linear-gradient(45deg, var(--p), var(--s)); color: #000; font-weight: 900; cursor: pointer; box-shadow: var(--neon); transition: 0.3s; }
-        .btn-action:hover { transform: translateY(-3px); filter: brightness(1.2); }
-        .btn-secondary { background: rgba(255,255,255,0.1); color: var(--p); border: 1px solid var(--p); }
-        .btn-danger { background: rgba(255,77,77,0.2); color: var(--red); border: 1px solid var(--red); }
-        .hidden { display: none; }
-        
-        /* نظام الدردشة */
-        .chat-container { display: grid; grid-template-columns: 300px 1fr; gap: 20px; height: 600px; }
-        .chat-sidebar { background: rgba(0,0,0,0.3); border-radius: 20px; border: 1px solid var(--border); overflow-y: auto; }
-        .chat-user { padding: 15px; border-bottom: 1px solid var(--border); cursor: pointer; display: flex; align-items: center; gap: 12px; transition: 0.3s; }
-        .chat-user:hover { background: rgba(0, 242, 254, 0.05); }
-        .chat-user.active { background: rgba(0, 242, 254, 0.1); border-right: 3px solid var(--p); }
-        .chat-user img { width: 45px; height: 45px; border-radius: 50%; border: 2px solid var(--border); }
-        .chat-user-info { flex-grow: 1; }
-        .chat-user-name { font-weight: 700; font-size: 0.9rem; }
-        .chat-user-status { font-size: 0.7rem; color: var(--p); }
-        .unread-badge { background: var(--red); color: #fff; border-radius: 50%; width: 20px; height: 20px; display: flex; align-items: center; justify-content: center; font-size: 0.65rem; font-weight: 900; }
-        
-        .chat-main { display: flex; flex-direction: column; background: rgba(0,0,0,0.3); border-radius: 20px; border: 1px solid var(--border); }
-        .chat-header { padding: 20px; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 12px; }
-        .chat-messages { flex-grow: 1; overflow-y: auto; padding: 20px; display: flex; flex-direction: column; gap: 12px; }
-        .message { max-width: 70%; padding: 12px 18px; border-radius: 18px; line-height: 1.5; }
-        .message.sent { background: linear-gradient(135deg, var(--p), var(--s)); color: #000; align-self: flex-end; border-bottom-left-radius: 5px; }
-        .message.received { background: rgba(255,255,255,0.05); color: #e6edf3; align-self: flex-start; border-bottom-right-radius: 5px; }
-        .message-time { font-size: 0.65rem; opacity: 0.7; margin-top: 5px; }
-        .chat-input-area { padding: 20px; border-top: 1px solid var(--border); display: flex; gap: 10px; }
-        .chat-input { flex-grow: 1; padding: 14px; background: #0d1117; border: 1px solid var(--border); border-radius: 15px; color: #fff; outline: none; }
-        .chat-send-btn { padding: 14px 25px; background: linear-gradient(45deg, var(--p), var(--s)); border: none; border-radius: 15px; color: #000; font-weight: 900; cursor: pointer; }
-        
-        .user-card { background: rgba(0,0,0,0.3); padding: 15px; border-radius: 18px; border: 1px solid var(--border); display: flex; align-items: center; gap: 15px; margin-bottom: 12px; }
-        .user-card img { width: 55px; height: 55px; border-radius: 50%; border: 2px solid var(--p); }
-        .user-info { flex-grow: 1; }
-        .user-name { font-weight: 900; font-size: 1rem; }
-        .user-spec { font-size: 0.75rem; color: var(--p); }
-        .user-status { display: inline-block; padding: 3px 10px; border-radius: 10px; font-size: 0.65rem; margin-top: 5px; }
-        .status-online { background: rgba(35, 134, 54, 0.2); color: var(--green); border: 1px solid var(--green); }
-        .status-offline { background: rgba(139, 148, 158, 0.2); color: #8b949e; border: 1px solid #8b949e; }
-        
-        @media (max-width: 1250px) { 
-            .layout { grid-template-columns: 1fr; } 
-            .side-r { display: none; }
-            .chat-container { grid-template-columns: 1fr; height: auto; }
-            .chat-sidebar { display: none; }
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SITAJ | الملف الشخصي</title>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@200;300;400;600;700;900&family=Tajawal:wght@200;300;400;500;700;800;900&family=Cinzel+Decorative:wght@400;700;900&family=Cinzel:wght@400;600;900&family=Josefin+Sans:wght@100;200;300;400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+:root{
+  --void:#03060f;--abyss:#060c1e;--deep:#0a1428;--navy:#0f1e3d;
+  --white:#f0f4ff;--mist:#a8bce0;--fog:#6880a8;
+  --gold:#c8a84a;--gold2:#e8ca78;--gold3:#f5dfa0;
+  --azure:#3d7fff;--azure2:#5b94ff;--sapphire:#1a4fc4;
+  --teal:#00d4b8;--rose:#ff3d6e;
+  --font-ar:'Cairo','Tajawal',sans-serif;
+  --font-cin:'Cinzel',serif;--font-cind:'Cinzel Decorative',serif;
+  --font-jos:'Josefin Sans',sans-serif;
+}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+html{scroll-behavior:smooth;}
+body{background:var(--void);color:var(--white);font-family:var(--font-ar);min-height:100vh;cursor:none;overflow-x:hidden;}
+body::after{content:'';position:fixed;inset:0;pointer-events:none;z-index:9999;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)' opacity='.025'/%3E%3C/svg%3E");opacity:.5;}
+
+/* CURSOR */
+#cur{position:fixed;width:8px;height:8px;background:var(--gold2);border-radius:50%;pointer-events:none;z-index:999999;transform:translate(-50%,-50%);transition:width .2s,height .2s;mix-blend-mode:difference;}
+#curR{position:fixed;width:36px;height:36px;border:1px solid rgba(200,168,74,.5);border-radius:50%;pointer-events:none;z-index:999998;transform:translate(-50%,-50%);transition:all .14s cubic-bezier(.22,1,.36,1);}
+body.hov #cur{width:20px;height:20px;}
+body.hov #curR{width:60px;height:60px;border-color:rgba(200,168,74,.25);}
+
+/* NAVBAR */
+#NAV{position:fixed;top:0;left:0;right:0;z-index:800;height:68px;padding:0 44px;display:flex;align-items:center;justify-content:space-between;background:rgba(3,6,15,.92);backdrop-filter:blur(28px) saturate(2);border-bottom:1px solid rgba(200,168,74,.1);box-shadow:0 4px 60px rgba(0,0,0,.6);}
+.n-logo{font-family:var(--font-cind);font-size:1.35rem;font-weight:700;letter-spacing:5px;background:linear-gradient(135deg,var(--white),var(--gold2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;cursor:pointer;user-select:none;flex-shrink:0;text-decoration:none;}
+.n-links{display:flex;gap:32px;list-style:none;}
+.n-links a{font-family:var(--font-ar);font-size:13.5px;font-weight:500;color:var(--fog);text-decoration:none;position:relative;padding-bottom:3px;transition:color .3s;}
+.n-links a::after{content:'';position:absolute;bottom:0;right:0;width:0;height:1px;background:linear-gradient(90deg,transparent,var(--gold));transition:width .35s;}
+.n-links a:hover{color:var(--white);}
+.n-links a:hover::after,.n-links a.act::after{width:100%;right:auto;left:0;}
+.n-links a.act{color:var(--gold2);}
+.n-right{display:flex;align-items:center;gap:10px;flex-shrink:0;}
+.n-lang{display:flex;border:1px solid rgba(200,168,74,.22);border-radius:50px;overflow:hidden;background:rgba(200,168,74,.04);}
+.n-lang button{font-family:var(--font-jos);font-size:11px;font-weight:300;letter-spacing:2.5px;padding:7px 13px;background:transparent;border:none;color:var(--fog);cursor:pointer;transition:all .3s;}
+.n-lang button.on{background:rgba(200,168,74,.18);color:var(--gold2);}
+.n-bell{position:relative;width:42px;height:42px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.09);border-radius:13px;display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--azure2);font-size:1rem;transition:all .3s;}
+.n-bell:hover{background:rgba(61,127,255,.12);border-color:rgba(61,127,255,.4);transform:translateY(-2px);}
+.n-bell-badge{position:absolute;top:-5px;right:-5px;width:18px;height:18px;border-radius:50%;background:linear-gradient(135deg,var(--rose),#c0274e);display:flex;align-items:center;justify-content:center;font-size:.58rem;font-weight:800;color:#fff;animation:bp 2.5s infinite;}
+@keyframes bp{0%,100%{box-shadow:0 0 0 0 rgba(255,61,110,.5);}50%{box-shadow:0 0 0 6px rgba(255,61,110,0);}}
+.n-burger{width:34px;height:22px;display:flex;flex-direction:column;justify-content:space-between;cursor:pointer;}
+.n-bline{width:100%;height:2px;border-radius:4px;background:linear-gradient(90deg,var(--gold2),var(--azure2));transition:all .55s cubic-bezier(.68,-.55,.265,1.55);}
+.n-burger.on .n-bline:nth-child(1){transform:rotate(45deg) translate(7px,7px);}
+.n-burger.on .n-bline:nth-child(2){opacity:0;transform:translateX(-20px);}
+.n-burger.on .n-bline:nth-child(3){transform:rotate(-45deg) translate(7px,-7px);}
+
+/* OVERLAY + SIDENAV */
+#OVERLAY{position:fixed;inset:0;z-index:1500;background:rgba(3,6,15,.88);backdrop-filter:blur(12px);opacity:0;pointer-events:none;transition:opacity .45s;}
+#OVERLAY.on{opacity:1;pointer-events:all;}
+#SIDENAV{position:fixed;top:0;right:-460px;width:420px;height:100vh;z-index:1600;background:linear-gradient(170deg,#0d1a35 0%,#080f22 60%,#040810 100%);border-left:1px solid rgba(200,168,74,.14);box-shadow:-30px 0 100px rgba(0,0,0,.7);transition:right .65s cubic-bezier(.68,-.55,.265,1.55);display:flex;flex-direction:column;overflow:hidden;}
+#SIDENAV.on{right:0;}
+.sn-deco{position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,transparent,var(--gold),var(--azure2),var(--gold),transparent);}
+.sn-body{flex:1;overflow-y:auto;padding:28px 24px 24px;scrollbar-width:thin;scrollbar-color:rgba(200,168,74,.25) transparent;}
+.sn-top{display:flex;align-items:center;justify-content:space-between;padding-bottom:24px;margin-bottom:20px;border-bottom:1px solid rgba(200,168,74,.1);}
+.sn-logo-txt{font-family:var(--font-cind);font-size:1.2rem;letter-spacing:4px;background:linear-gradient(135deg,var(--gold2),var(--white));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.sn-x{width:38px;height:38px;border-radius:50%;background:rgba(255,61,110,.08);border:1px solid rgba(255,61,110,.18);display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--rose);font-size:1rem;transition:all .3s;flex-shrink:0;}
+.sn-x:hover{background:rgba(255,61,110,.2);transform:rotate(90deg);}
+.sn-profile{display:flex;align-items:center;gap:14px;padding:18px;background:rgba(255,255,255,.03);border:1px solid rgba(200,168,74,.1);border-radius:18px;margin-bottom:20px;text-decoration:none;transition:all .35s;}
+.sn-profile:hover{background:rgba(200,168,74,.06);border-color:rgba(200,168,74,.28);transform:translateX(-5px);}
+.sn-av{width:50px;height:50px;border-radius:50%;background:linear-gradient(135deg,var(--azure),var(--sapphire));display:flex;align-items:center;justify-content:center;font-size:1.3rem;flex-shrink:0;overflow:hidden;}
+.sn-av img{width:100%;height:100%;object-fit:cover;}
+.sn-info h3{font-size:.95rem;font-weight:700;color:var(--white);}
+.sn-info p{font-size:.75rem;color:var(--fog);}
+.sn-sec-label{font-family:var(--font-jos);font-size:.55rem;letter-spacing:5px;color:rgba(200,168,74,.3);text-transform:uppercase;padding:14px 6px 8px;}
+.sn-ul{list-style:none;}
+.sn-li{margin-bottom:2px;}
+.sn-a{display:flex;align-items:center;justify-content:flex-end;gap:12px;padding:13px 14px;text-decoration:none;border-radius:14px;font-size:.92rem;font-weight:600;color:var(--fog);transition:all .3s;}
+.sn-a:hover{color:var(--white);background:rgba(61,127,255,.08);transform:translateX(-5px);}
+.sn-a.current{color:var(--gold2);background:rgba(200,168,74,.05);}
+.sn-ic{width:34px;height:34px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:.95rem;flex-shrink:0;background:rgba(61,127,255,.08);border:1px solid rgba(61,127,255,.15);color:var(--azure2);}
+.sn-li.logout .sn-a{color:rgba(255,100,120,.7);}
+.sn-li.logout .sn-a .sn-ic{background:rgba(255,61,110,.08);border-color:rgba(255,61,110,.15);color:var(--rose);}
+.sn-hr{height:1px;background:rgba(255,255,255,.05);margin:12px 0;}
+
+/* PAGE */
+.page{padding-top:88px;padding-bottom:60px;min-height:100vh;position:relative;}
+
+/* PROFILE HERO BANNER */
+.profile-banner{
+  position:relative;height:320px;overflow:hidden;
+  background:linear-gradient(135deg,#0a1428 0%,#0f1e3d 40%,#0a1428 100%);
+}
+.banner-bg{position:absolute;inset:0;z-index:0;}
+.banner-canvas{position:absolute;inset:0;z-index:1;}
+.banner-overlay{position:absolute;inset:0;z-index:2;background:linear-gradient(180deg,transparent 40%,rgba(3,6,15,.95) 100%);}
+.banner-edit{
+  position:absolute;top:16px;left:16px;z-index:5;
+  width:40px;height:40px;border-radius:12px;
+  background:rgba(0,0,0,.5);backdrop-filter:blur(10px);
+  border:1px solid rgba(255,255,255,.15);
+  display:flex;align-items:center;justify-content:center;
+  cursor:pointer;color:var(--fog);font-size:.9rem;transition:all .3s;
+}
+.banner-edit:hover{background:rgba(61,127,255,.3);color:var(--white);border-color:rgba(61,127,255,.5);}
+
+/* PROFILE CARD */
+.profile-container{max-width:900px;margin:0 auto;padding:0 24px;}
+.profile-card{
+  position:relative;margin-top:-120px;z-index:10;
+  background:linear-gradient(145deg,rgba(10,20,40,.98),rgba(6,12,30,.98));
+  border:1px solid rgba(200,168,74,.15);border-radius:28px;
+  padding:0 0 32px;overflow:hidden;
+  box-shadow:0 30px 100px rgba(0,0,0,.6);
+  animation:cardIn .6s cubic-bezier(.22,1,.36,1);
+}
+@keyframes cardIn{from{opacity:0;transform:translateY(30px);}to{opacity:1;transform:none;}}
+.pc-top-deco{height:3px;background:linear-gradient(90deg,transparent,var(--gold),var(--azure2),var(--gold),transparent);}
+
+/* AVATAR SECTION */
+.pc-head{padding:28px 36px 0;display:flex;align-items:flex-end;gap:24px;flex-wrap:wrap;}
+.pc-avatar-wrap{position:relative;flex-shrink:0;}
+.pc-avatar{
+  width:110px;height:110px;border-radius:50%;
+  background:linear-gradient(135deg,var(--azure),var(--sapphire));
+  display:flex;align-items:center;justify-content:center;
+  font-size:2.8rem;font-weight:900;
+  border:4px solid rgba(3,6,15,.98);
+  box-shadow:0 0 0 2px rgba(200,168,74,.3),0 12px 40px rgba(61,127,255,.4);
+  cursor:pointer;position:relative;overflow:hidden;transition:all .3s;
+}
+.pc-avatar img{width:100%;height:100%;object-fit:cover;}
+.pc-avatar:hover{box-shadow:0 0 0 2px rgba(200,168,74,.6),0 12px 40px rgba(61,127,255,.6);}
+.pc-avatar-overlay{
+  position:absolute;inset:0;background:rgba(0,0,0,.55);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;
+  opacity:0;transition:opacity .25s;font-size:.7rem;color:#fff;
+}
+.pc-avatar:hover .pc-avatar-overlay{opacity:1;}
+.pc-avatar-overlay i{font-size:1.4rem;}
+.pc-status-dot{
+  position:absolute;bottom:4px;right:4px;
+  width:22px;height:22px;border-radius:50%;background:#23a559;
+  border:3px solid rgba(3,6,15,.98);z-index:2;
+}
+
+/* PROFILE INFO */
+.pc-info{flex:1;min-width:200px;padding-bottom:8px;}
+.pc-name{
+  font-family:var(--font-ar);font-size:1.8rem;font-weight:900;
+  background:linear-gradient(135deg,var(--white),var(--mist));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+  margin-bottom:4px;
+}
+.pc-handle{font-family:var(--font-jos);font-size:.8rem;letter-spacing:2px;color:var(--fog);margin-bottom:10px;}
+.pc-bio{font-size:.88rem;color:var(--mist);line-height:1.6;max-width:400px;}
+.pc-badges{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px;}
+.pc-badge{
+  display:flex;align-items:center;gap:6px;padding:5px 12px;
+  border-radius:20px;font-size:.73rem;font-weight:700;
+  font-family:var(--font-jos);letter-spacing:1px;
+}
+.badge-gold{background:rgba(200,168,74,.12);border:1px solid rgba(200,168,74,.3);color:var(--gold2);}
+.badge-blue{background:rgba(61,127,255,.12);border:1px solid rgba(61,127,255,.3);color:var(--azure2);}
+.badge-teal{background:rgba(0,212,184,.1);border:1px solid rgba(0,212,184,.3);color:var(--teal);}
+.badge-rose{background:rgba(255,61,110,.1);border:1px solid rgba(255,61,110,.3);color:var(--rose);}
+
+/* ACTIONS */
+.pc-actions{margin-right:auto;display:flex;gap:10px;flex-wrap:wrap;padding-bottom:8px;}
+.pc-btn{
+  display:flex;align-items:center;gap:8px;padding:10px 20px;
+  border-radius:12px;font-family:var(--font-ar);font-size:.88rem;font-weight:700;
+  cursor:pointer;border:none;transition:all .35s;
+}
+.pc-btn.prime{background:linear-gradient(135deg,var(--azure),var(--sapphire));color:#fff;box-shadow:0 4px 20px rgba(61,127,255,.3);}
+.pc-btn.prime:hover{transform:translateY(-2px);box-shadow:0 8px 30px rgba(61,127,255,.5);}
+.pc-btn.ghost{background:transparent;color:var(--fog);border:1px solid rgba(255,255,255,.12);}
+.pc-btn.ghost:hover{background:rgba(255,255,255,.06);color:var(--white);}
+
+/* DIVIDER */
+.pc-div{height:1px;background:linear-gradient(90deg,rgba(200,168,74,.08),rgba(61,127,255,.12),rgba(200,168,74,.08));margin:24px 36px;}
+
+/* STATS */
+.pc-stats{display:flex;gap:0;padding:0 36px;}
+.stat-item{flex:1;text-align:center;padding:16px 8px;position:relative;}
+.stat-item:not(:last-child)::after{content:'';position:absolute;left:0;top:20%;bottom:20%;width:1px;background:rgba(255,255,255,.06);}
+.stat-val{font-family:var(--font-cind);font-size:1.6rem;font-weight:700;background:linear-gradient(135deg,var(--white),var(--gold2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.stat-label{font-family:var(--font-jos);font-size:.6rem;letter-spacing:3px;color:var(--fog);text-transform:uppercase;margin-top:4px;}
+
+/* TABS */
+.pc-tabs{display:flex;gap:0;padding:0 36px;margin-bottom:24px;border-bottom:1px solid rgba(255,255,255,.05);}
+.tab-btn{
+  padding:14px 20px;font-family:var(--font-ar);font-size:.88rem;font-weight:700;
+  color:var(--fog);cursor:pointer;border:none;background:transparent;
+  border-bottom:2px solid transparent;transition:all .3s;position:relative;
+  display:flex;align-items:center;gap:8px;
+}
+.tab-btn:hover{color:var(--white);}
+.tab-btn.on{color:var(--gold2);border-bottom-color:var(--gold2);}
+.tab-panel{display:none;padding:0 36px;}
+.tab-panel.on{display:block;}
+
+/* EDIT FORM */
+.edit-section{margin-bottom:28px;}
+.edit-section-title{
+  font-family:var(--font-jos);font-size:.58rem;letter-spacing:5px;
+  color:rgba(200,168,74,.4);text-transform:uppercase;margin-bottom:14px;
+  display:flex;align-items:center;gap:10px;
+}
+.edit-section-title::after{content:'';flex:1;height:1px;background:rgba(255,255,255,.05);}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+.form-full{grid-column:1/-1;}
+.form-group{display:flex;flex-direction:column;gap:6px;}
+.form-label{font-size:.78rem;font-weight:700;color:var(--fog);}
+.form-inp{
+  width:100%;padding:12px 15px;background:rgba(255,255,255,.05);
+  border:1px solid rgba(255,255,255,.09);border-radius:12px;
+  color:var(--white);font-family:var(--font-ar);font-size:.9rem;
+  transition:all .3s;
+}
+.form-inp:focus{outline:none;border-color:rgba(61,127,255,.5);background:rgba(61,127,255,.05);box-shadow:0 0 0 3px rgba(61,127,255,.08);}
+.form-inp::placeholder{color:rgba(104,128,168,.5);}
+textarea.form-inp{resize:vertical;min-height:80px;line-height:1.6;}
+select.form-inp{cursor:pointer;}
+select.form-inp option{background:#0a1428;}
+
+/* COLOR PICKER */
+.color-grid{display:flex;gap:10px;flex-wrap:wrap;padding:4px 0;}
+.color-dot{
+  width:32px;height:32px;border-radius:50%;cursor:pointer;
+  transition:all .25s;border:3px solid transparent;
+  position:relative;
+}
+.color-dot.on{border-color:#fff;transform:scale(1.15);}
+.color-dot.on::after{content:'\f00c';font-family:'Font Awesome 6 Free';font-weight:900;position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:.7rem;color:#fff;}
+
+/* AVATAR UPLOAD IN FORM */
+.avatar-edit-zone{
+  display:flex;align-items:center;gap:20px;
+  padding:20px;background:rgba(255,255,255,.03);
+  border:1px solid rgba(255,255,255,.07);border-radius:16px;
+}
+.ae-preview{
+  width:70px;height:70px;border-radius:50%;flex-shrink:0;
+  background:linear-gradient(135deg,var(--azure),var(--sapphire));
+  display:flex;align-items:center;justify-content:center;font-size:1.5rem;font-weight:900;
+  overflow:hidden;border:2px solid rgba(200,168,74,.2);
+}
+.ae-preview img{width:100%;height:100%;object-fit:cover;}
+.ae-actions{display:flex;flex-direction:column;gap:8px;}
+.ae-btn{
+  display:flex;align-items:center;gap:8px;padding:8px 16px;border-radius:10px;
+  font-family:var(--font-ar);font-size:.82rem;font-weight:700;cursor:pointer;border:none;
+  transition:all .3s;
+}
+.ae-btn.up{background:rgba(61,127,255,.15);border:1px solid rgba(61,127,255,.3);color:var(--azure2);}
+.ae-btn.up:hover{background:rgba(61,127,255,.25);}
+.ae-btn.rm{background:rgba(255,61,110,.08);border:1px solid rgba(255,61,110,.2);color:var(--rose);}
+.ae-btn.rm:hover{background:rgba(255,61,110,.18);}
+
+/* ACTIVITY FEED */
+.activity-item{
+  display:flex;align-items:center;gap:14px;padding:14px;
+  background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);
+  border-radius:14px;margin-bottom:10px;transition:all .3s;
+}
+.activity-item:hover{background:rgba(255,255,255,.05);border-color:rgba(61,127,255,.15);transform:translateX(-4px);}
+.act-icon{
+  width:42px;height:42px;border-radius:12px;
+  display:flex;align-items:center;justify-content:center;font-size:1rem;flex-shrink:0;
+}
+.act-icon.blue{background:rgba(61,127,255,.15);color:var(--azure2);}
+.act-icon.gold{background:rgba(200,168,74,.15);color:var(--gold2);}
+.act-icon.teal{background:rgba(0,212,184,.12);color:var(--teal);}
+.act-icon.rose{background:rgba(255,61,110,.1);color:var(--rose);}
+.act-text{flex:1;}
+.act-title{font-size:.88rem;font-weight:700;color:var(--white);margin-bottom:2px;}
+.act-sub{font-size:.75rem;color:var(--fog);}
+.act-time{font-family:var(--font-jos);font-size:.65rem;letter-spacing:1px;color:rgba(104,128,168,.5);flex-shrink:0;}
+
+/* ACHIEVEMENTS */
+.achievements-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:14px;}
+.ach-card{
+  background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07);
+  border-radius:18px;padding:20px;text-align:center;
+  transition:all .35s cubic-bezier(.34,1.56,.64,1);cursor:default;
+}
+.ach-card:hover{transform:translateY(-5px) scale(1.02);border-color:rgba(200,168,74,.25);background:rgba(200,168,74,.04);}
+.ach-card.locked{opacity:.4;filter:grayscale(.9);}
+.ach-icon{font-size:2rem;margin-bottom:10px;display:block;}
+.ach-name{font-size:.82rem;font-weight:800;color:var(--white);margin-bottom:4px;}
+.ach-desc{font-size:.7rem;color:var(--fog);}
+.ach-progress{height:4px;background:rgba(255,255,255,.08);border-radius:2px;margin-top:10px;overflow:hidden;}
+.ach-progress-bar{height:100%;background:linear-gradient(90deg,var(--azure),var(--teal));border-radius:2px;transition:width .6s ease;}
+
+/* SAVE BAR */
+.save-bar{
+  position:fixed;bottom:0;left:0;right:0;z-index:700;
+  background:rgba(4,8,18,.97);backdrop-filter:blur(20px);
+  border-top:1px solid rgba(200,168,74,.12);
+  padding:14px 24px;display:flex;align-items:center;justify-content:space-between;
+  transform:translateY(100%);transition:transform .4s cubic-bezier(.22,1,.36,1);
+}
+.save-bar.visible{transform:translateY(0);}
+.save-bar-msg{font-size:.88rem;color:var(--gold2);display:flex;align-items:center;gap:10px;}
+.save-bar-btns{display:flex;gap:10px;}
+.sb-btn{padding:10px 24px;border-radius:10px;font-family:var(--font-ar);font-size:.88rem;font-weight:700;cursor:pointer;border:none;transition:all .3s;}
+.sb-btn.save{background:linear-gradient(135deg,var(--azure),var(--sapphire));color:#fff;box-shadow:0 4px 16px rgba(61,127,255,.35);}
+.sb-btn.save:hover{transform:translateY(-1px);box-shadow:0 6px 24px rgba(61,127,255,.5);}
+.sb-btn.cancel{background:rgba(255,255,255,.06);color:var(--fog);}
+.sb-btn.cancel:hover{background:rgba(255,255,255,.1);color:var(--white);}
+
+/* TOAST */
+#toast{position:fixed;bottom:80px;right:50%;transform:translateX(50%);z-index:9000;background:rgba(6,12,30,.98);border:1px solid rgba(255,255,255,.1);border-radius:14px;padding:12px 22px;font-size:.88rem;font-weight:700;box-shadow:0 8px 30px rgba(0,0,0,.5);pointer-events:none;opacity:0;transition:opacity .3s;display:flex;align-items:center;gap:10px;}
+#toast.show{opacity:1;}
+#toast.ok{border-color:rgba(0,212,184,.3);color:var(--teal);}
+#toast.err{border-color:rgba(255,61,110,.3);color:var(--rose);}
+
+[data-lang="en"] .ar{display:none!important;}
+[data-lang="ar"] .en{display:none!important;}
+.en{display:none;}
+@media(max-width:900px){#NAV{padding:0 18px;}.n-links{display:none;}.form-grid{grid-template-columns:1fr;}}
+@media(max-width:600px){.pc-head{flex-direction:column;align-items:flex-start;}.pc-actions{margin-right:0;}.pc-stats{flex-wrap:wrap;}.stat-item{min-width:80px;}.pc-tabs{overflow-x:auto;scrollbar-width:none;}.tab-btn{white-space:nowrap;}.tab-panel,.pc-head,.pc-stats,.pc-tabs,.pc-div{padding-left:20px !important;padding-right:20px !important;}}
+</style>
 </head>
 <body>
-    <div id="particles-js"></div>
-    <div class="toast-area" id="toastBox"></div>
 
-    <div class="layout" id="osView" style="display: none;">
-        <aside class="panel">
-            <div class="u-box">
-                <div class="u-avatar-wrap" onclick="showTab('edit')">
-                    <img id="u_img" src="" alt="Profile">
-                    <div class="online-dot"></div>
-                </div>
-                <h2 id="u_name" style="font-weight: 900; font-size: 1.5rem;">...</h2>
-                <p id="u_spec" style="color: var(--p); font-size: 0.85rem; margin-top: 5px;">تحميل...</p>
-            </div>
-            <nav class="nav-os">
-                <div class="nav-link active" onclick="showTab('dash', this)"><i class="fas fa-th-large"></i> لوحة القيادة</div>
-                <div class="nav-link" onclick="showTab('friends', this)">
-                    <i class="fas fa-user-friends"></i> أصدقائي
-                    <span id="friendsCount" style="margin-right: auto; background: rgba(0, 242, 254, 0.2); padding: 2px 8px; border-radius: 10px; font-size: 0.7rem;">0</span>
-                </div>
-                <div class="nav-link" onclick="showTab('discover', this)"><i class="fas fa-user-plus"></i> اكتشف مستخدمين</div>
-                <div class="nav-link" onclick="showTab('chat', this)">
-                    <i class="fas fa-comments"></i> الرسائل
-                    <span id="unreadCount" class="badge-notif hidden">0</span>
-                </div>
-                <div class="nav-link" onclick="showTab('edit', this)"><i class="fas fa-user-cog"></i> إعدادات البروفايل</div>
-                <div class="nav-link" onclick="showTab('market', this)"><i class="fas fa-shopping-bag"></i> متجر النخبة</div>
-                <div class="nav-link" onclick="showTab('skills', this)"><i class="fas fa-dna"></i> رادار المهارات</div>
-                <div class="nav-link" onclick="logout()" style="color: var(--red); margin-top: 30px;"><i class="fas fa-power-off"></i> خروج آمن</div>
-            </nav>
-        </aside>
+<div id="cur"></div>
+<div id="curR"></div>
 
-        <main style="display: flex; flex-direction: column; gap: 20px;">
-            <!-- لوحة القيادة -->
-            <section id="tab-dash">
-                <div class="stats-grid">
-                    <div class="stat-mini"><h2 id="s_xp">0</h2><p style="font-size: 0.7rem; color: #8b949e;">XP</p></div>
-                    <div class="stat-mini"><h2 id="s_coins" style="color: var(--gold);">0</h2><p style="font-size: 0.7rem; color: #8b949e;">Coins</p></div>
-                    <div class="stat-mini"><h2 id="s_streak" style="color: var(--red);">0</h2><p style="font-size: 0.7rem; color: #8b949e;">أيام</p></div>
-                </div>
-                <div class="panel">
-                    <div style="display: flex; justify-content: space-between; font-weight: 900; margin-bottom: 10px;">
-                        <span id="u_lvl">المستوى 1</span>
-                        <span id="xp_perc">0/1000 XP</span>
-                    </div>
-                    <div class="xp-track"><div class="xp-bar" id="xp_bar"></div></div>
-                </div>
-                <div class="panel" style="margin-top: 20px;">
-                    <h3 style="margin-bottom: 15px;"><i class="fas fa-scroll" style="color: var(--p);"></i> السيرة الذاتية</h3>
-                    <p id="u_bio" style="font-size: 0.9rem; color: #8b949e; line-height: 1.6;">بانتظار مزامنة قصتك التعليمية...</p>
-                </div>
-            </section>
-
-            <!-- قائمة الأصدقاء -->
-            <section id="tab-friends" class="hidden">
-                <div class="panel">
-                    <h3 style="margin-bottom: 20px;"><i class="fas fa-user-friends"></i> قائمة أصدقائي (<span id="friendsTotal">0</span>)</h3>
-                    <div id="friends_list" style="display: flex; flex-direction: column; gap: 12px;">
-                        <div style="text-align: center; color: var(--p); padding: 40px;">
-                            <i class="fas fa-users" style="font-size: 3rem; opacity: 0.3; margin-bottom: 15px;"></i>
-                            <p>لم تقم بإضافة أي أصدقاء بعد</p>
-                            <p style="font-size: 0.8rem; color: #8b949e; margin-top: 10px;">انتقل إلى "اكتشف مستخدمين" لإضافة أصدقاء جدد</p>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            <!-- اكتشاف المستخدمين -->
-            <section id="tab-discover" class="hidden">
-                <div class="panel">
-                    <h3 style="margin-bottom: 20px;"><i class="fas fa-user-plus"></i> اكتشف مستخدمين جدد</h3>
-                    <div class="form-row">
-                        <input type="text" id="searchInput" class="form-input" placeholder="🔍 ابحث عن مستخدم..." oninput="filterUsers(this.value)">
-                    </div>
-                    <div id="users_list" style="display: flex; flex-direction: column; gap: 12px;">
-                        <div style="text-align: center; color: var(--p); padding: 20px;"><i class="fas fa-spinner fa-spin"></i> جاري البحث عن المستخدمين...</div>
-                    </div>
-                </div>
-            </section>
-
-            <!-- نظام الدردشة -->
-            <section id="tab-chat" class="hidden">
-                <div class="panel">
-                    <h3 style="margin-bottom: 20px;"><i class="fas fa-comments"></i> الرسائل المباشرة</h3>
-                    <div class="chat-container">
-                        <div class="chat-sidebar" id="chatSidebar">
-                            <div style="text-align: center; color: var(--p); padding: 20px;">
-                                <p style="font-size: 0.85rem;">لا توجد محادثات بعد</p>
-                            </div>
-                        </div>
-                        <div class="chat-main">
-                            <div class="chat-header" id="chatHeader">
-                                <i class="fas fa-comments" style="font-size: 2rem; color: var(--p);"></i>
-                                <div>
-                                    <h4>مرحباً في نظام المراسلة</h4>
-                                    <p style="font-size: 0.75rem; color: #8b949e;">اختر صديق لبدء المحادثة</p>
-                                </div>
-                            </div>
-                            <div class="chat-messages" id="chatMessages">
-                                <div style="text-align: center; color: #8b949e; padding: 50px;">
-                                    <i class="fas fa-comment-slash" style="font-size: 3rem; opacity: 0.3; margin-bottom: 15px;"></i>
-                                    <p>لم يتم اختيار أي محادثة</p>
-                                </div>
-                            </div>
-                            <div class="chat-input-area" id="chatInputArea" style="display: none;">
-                                <input type="text" class="chat-input" id="messageInput" placeholder="اكتب رسالتك هنا..." onkeypress="if(event.key==='Enter') sendMessage()">
-                                <button class="chat-send-btn" onclick="sendMessage()"><i class="fas fa-paper-plane"></i> إرسال</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            <!-- تعديل البروفايل -->
-            <section id="tab-edit" class="hidden">
-                <div class="panel">
-                    <h3 style="margin-bottom: 25px;"><i class="fas fa-id-card-alt"></i> مركز تحديث الهوية</h3>
-                    <div class="form-row">
-                        <label class="form-label">رابط الصورة (URL)</label>
-                        <input type="text" id="in_img" class="form-input" placeholder="https://..." oninput="updatePreview(this.value)">
-                        <div style="display: flex; gap: 10px; margin-top: 10px;">
-                            <button onclick="setAvatar('https://api.dicebear.com/7.x/bottts/svg?seed=Elite')" style="padding: 8px 12px; cursor:pointer; background:rgba(255,255,255,0.05); border: 1px solid var(--border); border-radius: 10px; color: #fff; transition: 0.3s;">🤖 روبوت</button>
-                            <button onclick="setAvatar('https://api.dicebear.com/7.x/avataaars/svg?seed=Dev')" style="padding: 8px 12px; cursor:pointer; background:rgba(255,255,255,0.05); border: 1px solid var(--border); border-radius: 10px; color: #fff; transition: 0.3s;">👨‍💻 مطور</button>
-                            <button onclick="setAvatar('https://api.dicebear.com/7.x/pixel-art/svg?seed=Game')" style="padding: 8px 12px; cursor:pointer; background:rgba(255,255,255,0.05); border: 1px solid var(--border); border-radius: 10px; color: #fff; transition: 0.3s;">👾 بكسل</button>
-                        </div>
-                    </div>
-                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
-                        <div class="form-row"><label class="form-label">الاسم المستعار</label><input type="text" id="in_name" class="form-input"></div>
-                        <div class="form-row"><label class="form-label">التخصص</label><input type="text" id="in_spec" class="form-input"></div>
-                    </div>
-                    <div class="form-row"><label class="form-label">السيرة الذاتية (Bio)</label><textarea id="in_bio" class="form-input" style="height: 100px; resize: none;"></textarea></div>
-                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
-                        <div class="form-row"><label class="form-label">GitHub</label><input type="text" id="in_git" class="form-input" placeholder="github.com/username"></div>
-                        <div class="form-row"><label class="form-label">LinkedIn</label><input type="text" id="in_link" class="form-input" placeholder="linkedin.com/in/username"></div>
-                    </div>
-                    <button class="btn-action" onclick="saveEverything()">💾 مزامنة وحفظ الهوية السحابية</button>
-                </div>
-            </section>
-
-            <!-- المتجر -->
-            <section id="tab-market" class="hidden">
-                <div class="panel">
-                    <h3 style="margin-bottom: 20px;"><i class="fas fa-store"></i> متجر النخبة</h3>
-                    <div class="market-grid">
-                        <div class="item-card"><div style="font-size: 2.5rem;">🛡️</div><h4>درع النخبة</h4><p style="font-size: 0.7rem; color: var(--gold); margin: 10px 0;">500 EC</p><button class="btn-action" style="padding: 8px;" onclick="buyItem(500, 'درع النخبة')">شراء</button></div>
-                        <div class="item-card"><div style="font-size: 2.5rem;">🔥</div><h4>XP Booster</h4><p style="font-size: 0.7rem; color: var(--gold); margin: 10px 0;">1200 EC</p><button class="btn-action" style="padding: 8px;" onclick="buyItem(1200, 'XP Booster')">شراء</button></div>
-                        <div class="item-card"><div style="font-size: 2.5rem;">💎</div><h4>ألماسة النخبة</h4><p style="font-size: 0.7rem; color: var(--gold); margin: 10px 0;">2500 EC</p><button class="btn-action" style="padding: 8px;" onclick="buyItem(2500, 'ألماسة النخبة')">شراء</button></div>
-                        <div class="item-card"><div style="font-size: 2.5rem;">⚡</div><h4>طاقة إضافية</h4><p style="font-size: 0.7rem; color: var(--gold); margin: 10px 0;">800 EC</p><button class="btn-action" style="padding: 8px;" onclick="buyItem(800, 'طاقة إضافية')">شراء</button></div>
-                    </div>
-                </div>
-            </section>
-
-            <!-- المهارات -->
-            <section id="tab-skills" class="hidden">
-                <div class="panel">
-                    <h3 style="margin-bottom: 20px;"><i class="fas fa-dna"></i> تحليل الحمض النووي المبرمج</h3>
-                    <div id="skill_list" style="margin-top: 20px;"></div>
-                </div>
-            </section>
-        </main>
-
-        <aside class="side-r" style="display: flex; flex-direction: column; gap: 20px;">
-            <div class="panel" style="text-align: center;">
-                <p style="font-size: 0.75rem; color: #8b949e;">EDU Vault</p>
-                <h1 id="v_coins" style="font-size: 3rem; font-weight: 900; color: var(--gold);">0</h1>
-                <span style="font-size: 0.7rem; background: rgba(255,204,0,0.1); padding: 5px 12px; border-radius: 10px; color: var(--gold);">EDU COINS (EC)</span>
-            </div>
-            <div class="panel">
-                <h3 style="margin-bottom: 20px;"><i class="fas fa-medal"></i> الأوسمة النادرة</h3>
-                <div id="badge_grid" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px;"></div>
-            </div>
-            <div class="panel">
-                <h3 style="margin-bottom: 15px;"><i class="fas fa-share-alt"></i> تواصل اجتماعي</h3>
-                <div style="display: flex; gap: 15px; margin-top: 15px; font-size: 1.5rem; justify-content: center;">
-                    <a id="lnk_git" href="#" target="_blank" style="color: #fff; transition: 0.3s;"><i class="fab fa-github"></i></a>
-                    <a id="lnk_link" href="#" target="_blank" style="color: var(--s); transition: 0.3s;"><i class="fab fa-linkedin"></i></a>
-                </div>
-            </div>
-        </aside>
+<nav id="NAV">
+  <a href="index.html" class="n-logo">SITAJ</a>
+  <ul class="n-links">
+    <li><a href="index.html"><span class="ar">الرئيسية</span><span class="en">Home</span></a></li>
+    <li><a href="videos.html"><span class="ar">فيديوهات</span><span class="en">Videos</span></a></li>
+    <li><a href="partys.html"><span class="ar">الغرف الصوتية</span><span class="en">Voice Rooms</span></a></li>
+    <li><a href="exams.html"><span class="ar">اختبارات</span><span class="en">Exams</span></a></li>
+  </ul>
+  <div class="n-right">
+    <div class="n-lang">
+      <button id="btnAr" class="on" onclick="setLang('ar')">AR</button>
+      <button id="btnEn" onclick="setLang('en')">EN</button>
     </div>
+    <div class="n-bell"><i class="fas fa-bell"></i><span class="n-bell-badge">3</span></div>
+    <div class="n-burger" id="burger" onclick="toggleMenu()"><div class="n-bline"></div><div class="n-bline"></div><div class="n-bline"></div></div>
+  </div>
+</nav>
 
-    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-        import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-        import { getFirestore, doc, getDoc, updateDoc, setDoc, collection, getDocs, query, limit, onSnapshot, addDoc, orderBy, where, arrayUnion, arrayRemove, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+<div id="OVERLAY" onclick="toggleMenu()"></div>
+<div id="SIDENAV">
+  <div class="sn-deco"></div>
+  <div class="sn-body">
+    <div class="sn-top">
+      <div class="sn-logo-txt">SITAJ</div>
+      <div class="sn-x" onclick="toggleMenu()"><i class="fas fa-times"></i></div>
+    </div>
+    <a href="profile.html" class="sn-profile">
+      <div class="sn-av" id="snSideAv"><i class="fas fa-user"></i></div>
+      <div class="sn-info"><h3 id="snSideName">ملفك الشخصي</h3><p class="ar">عرض وتعديل البيانات</p></div>
+    </a>
+    <div class="sn-sec-label ar">القائمة الرئيسية</div>
+    <ul class="sn-ul">
+      <li class="sn-li"><a href="index.html" class="sn-a"><span class="ar">الصفحة الرئيسية</span><div class="sn-ic"><i class="fas fa-home"></i></div></a></li>
+      <li class="sn-li"><a href="videos.html" class="sn-a"><span class="ar">الفيديوهات التعليمية</span><div class="sn-ic"><i class="fas fa-play-circle"></i></div></a></li>
+      <li class="sn-li"><a href="partys.html" class="sn-a"><span class="ar">الغرف الصوتية</span><div class="sn-ic"><i class="fas fa-microphone-alt"></i></div></a></li>
+      <li class="sn-li"><a href="exams.html" class="sn-a"><span class="ar">مركز الاختبارات</span><div class="sn-ic"><i class="fas fa-pen-fancy"></i></div></a></li>
+      <li class="sn-li"><a href="AI.html" class="sn-a"><span class="ar">المساعد الذكي</span><div class="sn-ic"><i class="fas fa-robot"></i></div></a></li>
+      <div class="sn-hr"></div>
+      <li class="sn-li"><a href="profile.html" class="sn-a current"><span class="ar">الملف الشخصي</span><div class="sn-ic"><i class="fas fa-user"></i></div></a></li>
+      <div class="sn-hr"></div>
+      <li class="sn-li logout"><a href="#" class="sn-a" onclick="doLogout()"><span class="ar">تسجيل خروج</span><div class="sn-ic"><i class="fas fa-power-off"></i></div></a></li>
+    </ul>
+  </div>
+</div>
 
-        const firebaseConfig = {
-            apiKey: "AIzaSyDJRA6KpLir1Jo-oVqqAANOglWEBXXn8oA",
-            authDomain: "eliteacademy-37bfc.firebaseapp.com",
-            projectId: "eliteacademy-37bfc",
-            storageBucket: "eliteacademy-37bfc.firebasestorage.app",
-            messagingSenderId: "203080953628",
-            appId: "1:203080953628:web:69efebccc336b79f0554d9"
-        };
+<div class="page">
 
-        const app = initializeApp(firebaseConfig);
-        const auth = getAuth(app);
-        const db = getFirestore(app);
+  <!-- BANNER -->
+  <div class="profile-banner" id="profileBanner">
+    <div class="banner-bg" id="bannerBg"></div>
+    <canvas class="banner-canvas" id="bannerCanvas"></canvas>
+    <div class="banner-overlay"></div>
+    <div class="banner-edit" onclick="triggerBannerUpload()" title="تغيير الغلاف">
+      <i class="fas fa-camera"></i>
+    </div>
+    <input type="file" id="bannerFileInput" accept="image/*" style="display:none" onchange="handleBannerChange(event)">
+  </div>
 
-        particlesJS('particles-js', { particles: { number: { value: 60 }, color: { value: '#00f2fe' }, opacity: { value: 0.2 }, move: { speed: 1 } } });
+  <div class="profile-container">
+    <div class="profile-card">
+      <div class="pc-top-deco"></div>
 
-        let uid, currentUser, allUsers = [], currentChatUser = null, chatUnsubscribe = null;
+      <!-- HEAD -->
+      <div class="pc-head">
+        <div class="pc-avatar-wrap">
+          <div class="pc-avatar" id="pcAvatar" onclick="triggerAvatarUpload()">
+            <div class="pc-avatar-overlay">
+              <i class="fas fa-camera"></i>
+              <span>تغيير</span>
+            </div>
+          </div>
+          <div class="pc-status-dot"></div>
+        </div>
+        <div class="pc-info">
+          <div class="pc-name" id="pcName">اسمك</div>
+          <div class="pc-handle" id="pcHandle">@username • SITAJ</div>
+          <div class="pc-bio" id="pcBio">أضف نبذة عنك في إعدادات الملف الشخصي</div>
+          <div class="pc-badges" id="pcBadges">
+            <span class="pc-badge badge-gold"><i class="fas fa-star"></i> <span class="ar">عضو نشط</span></span>
+            <span class="pc-badge badge-blue"><i class="fas fa-graduation-cap"></i> <span class="ar">متعلم</span></span>
+          </div>
+        </div>
+        <div class="pc-actions">
+          <button class="pc-btn prime" onclick="switchTab('edit')"><i class="fas fa-pen"></i> <span class="ar">تعديل الملف</span></button>
+          <button class="pc-btn ghost" onclick="copyProfileLink()"><i class="fas fa-share-alt"></i></button>
+        </div>
+      </div>
 
-        const notify = (msg, type = 'success') => {
-            const t = document.createElement('div');
-            t.className = 'toast';
-            const icon = type === 'error' ? 'exclamation-circle' : 'check-circle';
-            t.innerHTML = `<i class="fas fa-${icon}" style="color:var(--p)"></i> ${msg}`;
-            document.getElementById('toastBox').appendChild(t);
-            setTimeout(() => t.remove(), 4000);
-        };
+      <div class="pc-div"></div>
 
-        onAuthStateChanged(auth, async (user) => {
-            if (user) {
-                uid = user.uid;
-                await updateUserStatus(true);
-                const snap = await getDoc(doc(db, "users", uid));
-                if (snap.exists()) {
-                    currentUser = snap.data();
-                    syncUI();
-                } else {
-                    const fresh = { 
-                        nickname: "بطل النخبة", 
-                        points: 0, 
-                        coins: 500, 
-                        xp: 0, 
-                        streak: 1, 
-                        bio: "طالب جديد في EDUCORE", 
-                        specialty: "Full-Stack Dev", 
-                        photoURL: "https://api.dicebear.com/7.x/bottts/svg?seed=" + user.uid,
-                        friends: [],
-                        friendRequests: [],
-                        isOnline: true,
-                        lastSeen: serverTimestamp()
-                    };
-                    await setDoc(doc(db, "users", uid), fresh);
-                    currentUser = fresh;
-                    syncUI();
-                }
-                document.getElementById('osView').style.display = 'grid';
-                loadAllUsers();
-                listenToFriendRequests();
-            } else { 
-                window.location.href = "login.html"; 
-            }
-        });
+      <!-- STATS -->
+      <div class="pc-stats">
+        <div class="stat-item">
+          <div class="stat-val" id="statMsgs">0</div>
+          <div class="stat-label ar">رسالة</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-val" id="statXP">0</div>
+          <div class="stat-label ar">نقطة XP</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-val" id="statDays">1</div>
+          <div class="stat-label ar">يوم انضمام</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-val" id="statAch">0</div>
+          <div class="stat-label ar">إنجاز</div>
+        </div>
+      </div>
 
-        async function updateUserStatus(isOnline) {
-            if (uid) {
-                await updateDoc(doc(db, "users", uid), {
-                    isOnline: isOnline,
-                    lastSeen: serverTimestamp()
-                });
-            }
+      <div class="pc-div"></div>
+
+      <!-- TABS -->
+      <div class="pc-tabs">
+        <button class="tab-btn on" onclick="switchTab('edit')" id="tab-edit"><i class="fas fa-edit"></i> <span class="ar">تعديل الملف</span></button>
+        <button class="tab-btn" onclick="switchTab('activity')" id="tab-activity"><i class="fas fa-bolt"></i> <span class="ar">النشاط</span></button>
+        <button class="tab-btn" onclick="switchTab('achievements')" id="tab-achievements"><i class="fas fa-trophy"></i> <span class="ar">الإنجازات</span></button>
+      </div>
+
+      <!-- TAB: EDIT -->
+      <div class="tab-panel on" id="panel-edit">
+        <!-- Avatar Upload -->
+        <div class="edit-section">
+          <div class="edit-section-title ar">الصورة الشخصية</div>
+          <div class="avatar-edit-zone">
+            <div class="ae-preview" id="aePreview"></div>
+            <div class="ae-actions">
+              <button class="ae-btn up" onclick="triggerAvatarUpload()"><i class="fas fa-cloud-upload-alt"></i> <span class="ar">رفع صورة جديدة</span></button>
+              <button class="ae-btn rm" onclick="removeAvatar()"><i class="fas fa-trash"></i> <span class="ar">حذف الصورة</span></button>
+            </div>
+          </div>
+          <input type="file" id="avatarFileInput" accept="image/*" style="display:none" onchange="handleAvatarChange(event)">
+        </div>
+
+        <!-- Basic Info -->
+        <div class="edit-section">
+          <div class="edit-section-title ar">المعلومات الأساسية</div>
+          <div class="form-grid">
+            <div class="form-group">
+              <label class="form-label ar">الاسم المعروض</label>
+              <input type="text" class="form-inp" id="fName" maxlength="24" placeholder="اسمك..." oninput="markDirty()">
+            </div>
+            <div class="form-group">
+              <label class="form-label ar">اسم المستخدم</label>
+              <input type="text" class="form-inp" id="fUsername" maxlength="20" placeholder="@username" oninput="markDirty()">
+            </div>
+            <div class="form-group form-full">
+              <label class="form-label ar">النبذة الشخصية</label>
+              <textarea class="form-inp" id="fBio" maxlength="200" placeholder="اكتب شيئاً عن نفسك..." oninput="markDirty()"></textarea>
+            </div>
+            <div class="form-group">
+              <label class="form-label ar">الحالة</label>
+              <input type="text" class="form-inp" id="fStatus" maxlength="60" placeholder="ما الذي تفعله الآن؟" oninput="markDirty()">
+            </div>
+            <div class="form-group">
+              <label class="form-label ar">الموقع</label>
+              <input type="text" class="form-inp" id="fLocation" maxlength="40" placeholder="مدينتك..." oninput="markDirty()">
+            </div>
+          </div>
+        </div>
+
+        <!-- Color -->
+        <div class="edit-section">
+          <div class="edit-section-title ar">لون الاسم في الدردشة</div>
+          <div class="color-grid" id="colorGrid"></div>
+        </div>
+
+        <!-- Social -->
+        <div class="edit-section">
+          <div class="edit-section-title ar">الروابط الاجتماعية</div>
+          <div class="form-grid">
+            <div class="form-group">
+              <label class="form-label"><i class="fab fa-twitter" style="color:#1da1f2"></i> تويتر</label>
+              <input type="text" class="form-inp" id="fTwitter" placeholder="@handle" oninput="markDirty()">
+            </div>
+            <div class="form-group">
+              <label class="form-label"><i class="fab fa-github" style="color:#e0e0e0"></i> GitHub</label>
+              <input type="text" class="form-inp" id="fGithub" placeholder="username" oninput="markDirty()">
+            </div>
+            <div class="form-group">
+              <label class="form-label"><i class="fab fa-linkedin" style="color:#0a66c2"></i> LinkedIn</label>
+              <input type="text" class="form-inp" id="fLinkedin" placeholder="profile-url" oninput="markDirty()">
+            </div>
+            <div class="form-group">
+              <label class="form-label"><i class="fas fa-globe" style="color:var(--teal)"></i> الموقع</label>
+              <input type="text" class="form-inp" id="fWebsite" placeholder="https://..." oninput="markDirty()">
+            </div>
+          </div>
+        </div>
+
+        <!-- Privacy -->
+        <div class="edit-section">
+          <div class="edit-section-title ar">الخصوصية</div>
+          <div class="form-grid">
+            <div class="form-group form-full">
+              <label class="form-label ar">من يمكنه رؤية ملفك الشخصي</label>
+              <select class="form-inp" id="fPrivacy" onchange="markDirty()">
+                <option value="public">عام — الجميع</option>
+                <option value="members">الأعضاء فقط</option>
+                <option value="private">خاص — أنا فقط</option>
+              </select>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB: ACTIVITY -->
+      <div class="tab-panel" id="panel-activity">
+        <div id="activityList"></div>
+      </div>
+
+      <!-- TAB: ACHIEVEMENTS -->
+      <div class="tab-panel" id="panel-achievements">
+        <div class="achievements-grid" id="achievementsGrid"></div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- SAVE BAR -->
+<div class="save-bar" id="saveBar">
+  <div class="save-bar-msg"><i class="fas fa-circle-exclamation"></i> <span class="ar">لديك تغييرات غير محفوظة</span></div>
+  <div class="save-bar-btns">
+    <button class="sb-btn cancel" onclick="cancelChanges()"><span class="ar">إلغاء</span></button>
+    <button class="sb-btn save" onclick="saveProfile()"><i class="fas fa-save"></i> <span class="ar">حفظ التغييرات</span></button>
+  </div>
+</div>
+
+<!-- Toast -->
+<div id="toast"></div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+import { getFirestore, doc, getDoc, setDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+import { getStorage, ref as sRef, uploadBytes, getDownloadURL, uploadString } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-storage.js";
+import { getDatabase, ref as dbRef, set, onDisconnect, serverTimestamp as rtTS } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+
+const FB = { apiKey:"AIzaSyDJRA6KpLir1Jo-oVqqAANOglWEBXXn8oA", authDomain:"eliteacademy-37bfc.firebaseapp.com", projectId:"eliteacademy-37bfc", storageBucket:"eliteacademy-37bfc.firebasestorage.app", messagingSenderId:"203080953628", appId:"1:203080953628:web:69efebccc336b79f0554d9", databaseURL:"https://eliteacademy-37bfc-default-rtdb.firebaseio.com" };
+
+const fbApp = initializeApp(FB);
+const auth = getAuth(fbApp);
+const db = getFirestore(fbApp);
+const st = getStorage(fbApp);
+const rdb = getDatabase(fbApp);
+
+const NAME_COLORS = ['name-color-0','name-color-1','name-color-2','name-color-3','name-color-4','name-color-5','name-color-6','name-color-7'];
+const COLOR_HEX = ['#7c9ef5','#78dba0','#e8ca78','#c084fc','#00d4b8','#fb923c','#f472b6','#60d8e0'];
+
+let ME = null;
+let dirty = false;
+let pendingAvatarBase64 = null;
+let pendingBannerBase64 = null;
+
+const ACHIEVEMENTS = [
+  {id:'first_msg',icon:'💬',name:'أول رسالة',desc:'أرسل أول رسالة لك',xpNeeded:1},
+  {id:'active_week',icon:'🔥',name:'أسبوع نشط',desc:'تواصل لأسبوع متواصل',xpNeeded:100},
+  {id:'voice_call',icon:'🎙️',name:'صوتي',desc:'انضم لغرفة صوتية',xpNeeded:1},
+  {id:'hundred_msgs',icon:'💯',name:'100 رسالة',desc:'أرسل 100 رسالة',xpNeeded:100},
+  {id:'helper',icon:'🤝',name:'المساعد',desc:'أجب على 10 أسئلة',xpNeeded:50},
+  {id:'scholar',icon:'📚',name:'العالم',desc:'شاهد 20 درساً',xpNeeded:20},
+  {id:'explorer',icon:'🗺️',name:'المستكشف',desc:'زيارة 5 أقسام',xpNeeded:5},
+  {id:'champion',icon:'🏆',name:'البطل',desc:'حقق 1000 XP',xpNeeded:1000},
+];
+
+const ACTIVITY_SAMPLES = [
+  {icon:'fas fa-comment',color:'blue',title:'أرسل رسالة في #عام',sub:'السيرفر الرئيسي',time:'منذ دقيقتين'},
+  {icon:'fas fa-microphone',color:'teal',title:'انضم إلى غرفة صوتية',sub:'الغرفة الرئيسية',time:'منذ ساعة'},
+  {icon:'fas fa-star',color:'gold',title:'حصل على إنجاز "أول رسالة"',sub:'+50 XP',time:'منذ يومين'},
+  {icon:'fas fa-book-open',color:'blue',title:'شاهد درساً في الرياضيات',sub:'مدة 45 دقيقة',time:'منذ 3 أيام'},
+  {icon:'fas fa-trophy',color:'gold',title:'ارتفع إلى المرتبة 12',sub:'لوحة المتصدرين',time:'منذ أسبوع'},
+];
+
+/* ── LOAD ME ── */
+function loadMe(){
+  const s = JSON.parse(localStorage.getItem('sitaj_me')||'null');
+  if(s){ ME=s; initProfile(); }
+}
+
+onAuthStateChanged(auth, async user => {
+  if(user && !ME){
+    try{
+      const ud = await getDoc(doc(db,'users',user.uid));
+      const data = ud.data()||{};
+      ME = {
+        uid: user.uid,
+        name: data.nickname||data.displayName||user.displayName||'مستخدم',
+        colorIdx: data.colorIdx||0,
+        bio: data.bio||'',
+        avatarUrl: data.avatarUrl||user.photoURL||'',
+        bannerUrl: data.bannerUrl||'',
+        username: data.username||'',
+        status: data.status||'',
+        location: data.location||'',
+        twitter: data.twitter||'',
+        github: data.github||'',
+        linkedin: data.linkedin||'',
+        website: data.website||'',
+        privacy: data.privacy||'public',
+        xp: data.xp||0,
+        joinDate: data.joinDate||Date.now(),
+        msgCount: data.msgCount||0,
+      };
+      localStorage.setItem('sitaj_me',JSON.stringify(ME));
+    }catch(e){}
+    if(!ME) ME = JSON.parse(localStorage.getItem('sitaj_me')||'{}');
+    initProfile();
+  }
+});
+loadMe();
+
+function initProfile(){
+  if(!ME) return;
+  // ensure fields
+  ME.bio = ME.bio||'';
+  ME.avatarUrl = ME.avatarUrl||'';
+  ME.bannerUrl = ME.bannerUrl||'';
+  ME.username = ME.username||'';
+  ME.status = ME.status||'';
+  ME.location = ME.location||'';
+  ME.twitter = ME.twitter||'';
+  ME.github = ME.github||'';
+  ME.linkedin = ME.linkedin||'';
+  ME.website = ME.website||'';
+  ME.privacy = ME.privacy||'public';
+  ME.xp = ME.xp||0;
+  ME.joinDate = ME.joinDate||Date.now();
+  ME.msgCount = ME.msgCount||0;
+  ME.colorIdx = ME.colorIdx||0;
+
+  renderHero();
+  renderForms();
+  renderColorPicker();
+  renderActivity();
+  renderAchievements();
+  updateSidebar();
+  initBannerCanvas();
+
+  const pRef = dbRef(rdb,`presence/${ME.uid}`);
+  set(pRef,{name:ME.name,colorIdx:ME.colorIdx,avatarUrl:ME.avatarUrl||'',online:true,ts:rtTS()});
+  onDisconnect(pRef).remove();
+}
+
+function renderHero(){
+  const letter = ME.name?ME.name[0].toUpperCase():'?';
+  // Main avatar
+  const pcAv = document.getElementById('pcAvatar');
+  pcAv.innerHTML = ME.avatarUrl
+    ? `<img src="${ME.avatarUrl}"><div class="pc-avatar-overlay"><i class="fas fa-camera"></i><span>تغيير</span></div>`
+    : `${letter}<div class="pc-avatar-overlay"><i class="fas fa-camera"></i><span>تغيير</span></div>`;
+  // ae preview
+  const ae = document.getElementById('aePreview');
+  ae.innerHTML = ME.avatarUrl ? `<img src="${ME.avatarUrl}">` : letter;
+  // banner
+  if(ME.bannerUrl) document.getElementById('bannerBg').style.backgroundImage=`url(${ME.bannerUrl})`;
+  // name, handle, bio
+  document.getElementById('pcName').textContent = ME.name||'اسمك';
+  document.getElementById('pcHandle').textContent = `@${ME.username||ME.uid?.slice(-6)||'user'} • SITAJ`;
+  document.getElementById('pcBio').textContent = ME.bio||'أضف نبذة عنك في إعدادات الملف الشخصي';
+  // stats
+  document.getElementById('statMsgs').textContent = ME.msgCount||0;
+  document.getElementById('statXP').textContent = ME.xp||0;
+  const days = Math.max(1, Math.floor((Date.now()-(ME.joinDate||Date.now()))/86400000));
+  document.getElementById('statDays').textContent = days;
+  document.getElementById('statAch').textContent = ACHIEVEMENTS.filter(a=>(ME.xp||0)>=a.xpNeeded).length;
+  // color on name
+  const cc = NAME_COLORS[(ME.colorIdx||0)%NAME_COLORS.length];
+  document.getElementById('pcName').className = 'pc-name '+cc;
+}
+
+function renderForms(){
+  document.getElementById('fName').value = ME.name||'';
+  document.getElementById('fUsername').value = ME.username||'';
+  document.getElementById('fBio').value = ME.bio||'';
+  document.getElementById('fStatus').value = ME.status||'';
+  document.getElementById('fLocation').value = ME.location||'';
+  document.getElementById('fTwitter').value = ME.twitter||'';
+  document.getElementById('fGithub').value = ME.github||'';
+  document.getElementById('fLinkedin').value = ME.linkedin||'';
+  document.getElementById('fWebsite').value = ME.website||'';
+  document.getElementById('fPrivacy').value = ME.privacy||'public';
+}
+
+function renderColorPicker(){
+  const cg = document.getElementById('colorGrid'); cg.innerHTML='';
+  COLOR_HEX.forEach((c,i)=>{
+    const d=document.createElement('div');
+    d.className=`color-dot${(ME.colorIdx||0)===i?' on':''}`;
+    d.style.background=c;
+    d.style.boxShadow=(ME.colorIdx||0)===i?`0 0 14px ${c}`:'';
+    d.onclick=()=>{ME.colorIdx=i;renderColorPicker();renderHero();markDirty();};
+    cg.appendChild(d);
+  });
+}
+
+function renderActivity(){
+  const list = document.getElementById('activityList');
+  list.innerHTML = ACTIVITY_SAMPLES.map(a=>`
+    <div class="activity-item">
+      <div class="act-icon ${a.color}"><i class="${a.icon}"></i></div>
+      <div class="act-text">
+        <div class="act-title">${a.title}</div>
+        <div class="act-sub">${a.sub}</div>
+      </div>
+      <div class="act-time">${a.time}</div>
+    </div>`).join('');
+}
+
+function renderAchievements(){
+  const grid = document.getElementById('achievementsGrid');
+  grid.innerHTML = ACHIEVEMENTS.map(a=>{
+    const unlocked = (ME.xp||0) >= a.xpNeeded;
+    const progress = Math.min(100, Math.round(((ME.xp||0)/a.xpNeeded)*100));
+    return `<div class="ach-card${unlocked?'':' locked'}">
+      <span class="ach-icon">${a.icon}</span>
+      <div class="ach-name">${a.name}</div>
+      <div class="ach-desc">${a.desc}</div>
+      <div class="ach-progress"><div class="ach-progress-bar" style="width:${progress}%"></div></div>
+    </div>`;
+  }).join('');
+}
+
+function updateSidebar(){
+  const snAv = document.getElementById('snSideAv');
+  const snName = document.getElementById('snSideName');
+  if(snAv) snAv.innerHTML = ME.avatarUrl ? `<img src="${ME.avatarUrl}">` : `<i class="fas fa-user"></i>`;
+  if(snName) snName.textContent = ME.name||'ملفك الشخصي';
+}
+
+/* ── DIRTY / SAVE ── */
+window.markDirty = () => {
+  dirty = true;
+  document.getElementById('saveBar').classList.add('visible');
+};
+
+window.cancelChanges = () => {
+  dirty = false; pendingAvatarBase64=null; pendingBannerBase64=null;
+  document.getElementById('saveBar').classList.remove('visible');
+  renderForms(); renderHero(); renderColorPicker();
+  showToast('تم إلغاء التغييرات','ok');
+};
+
+window.saveProfile = async () => {
+  const name = document.getElementById('fName').value.trim();
+  if(name) ME.name = name;
+  ME.username = document.getElementById('fUsername').value.trim();
+  ME.bio = document.getElementById('fBio').value.trim();
+  ME.status = document.getElementById('fStatus').value.trim();
+  ME.location = document.getElementById('fLocation').value.trim();
+  ME.twitter = document.getElementById('fTwitter').value.trim();
+  ME.github = document.getElementById('fGithub').value.trim();
+  ME.linkedin = document.getElementById('fLinkedin').value.trim();
+  ME.website = document.getElementById('fWebsite').value.trim();
+  ME.privacy = document.getElementById('fPrivacy').value;
+
+  // Upload avatar
+  if(pendingAvatarBase64){
+    try{
+      showToast('⬆️ جاري رفع الصورة...','ok');
+      const path=`avatars/${ME.uid}_${Date.now()}.jpg`;
+      const snap=await uploadString(sRef(st,path),pendingAvatarBase64,'data_url');
+      ME.avatarUrl = await getDownloadURL(snap.ref);
+    }catch(e){ ME.avatarUrl=pendingAvatarBase64; }
+    pendingAvatarBase64=null;
+  }
+
+  // Upload banner
+  if(pendingBannerBase64){
+    try{
+      const path=`banners/${ME.uid}_${Date.now()}.jpg`;
+      const snap=await uploadString(sRef(st,path),pendingBannerBase64,'data_url');
+      ME.bannerUrl=await getDownloadURL(snap.ref);
+    }catch(e){ ME.bannerUrl=pendingBannerBase64; }
+    pendingBannerBase64=null;
+  }
+
+  // Save to localStorage (always works)
+  localStorage.setItem('sitaj_me',JSON.stringify(ME));
+
+  // Try Firestore
+  if(ME.uid && !ME.uid.startsWith('guest-')){
+    try{
+      await setDoc(doc(db,'users',ME.uid),{
+        nickname:ME.name, displayName:ME.name, bio:ME.bio,
+        username:ME.username, status:ME.status, location:ME.location,
+        twitter:ME.twitter, github:ME.github, linkedin:ME.linkedin, website:ME.website,
+        avatarUrl:ME.avatarUrl||'', bannerUrl:ME.bannerUrl||'', privacy:ME.privacy,
+        colorIdx:ME.colorIdx||0, xp:ME.xp||0, msgCount:ME.msgCount||0,
+        joinDate:ME.joinDate||Date.now(), updatedAt:Date.now()
+      },{merge:true});
+    }catch(e){}
+  }
+
+  // Update presence
+  const pRef=dbRef(rdb,`presence/${ME.uid}`);
+  set(pRef,{name:ME.name,colorIdx:ME.colorIdx||0,avatarUrl:ME.avatarUrl||'',online:true,ts:rtTS()});
+
+  dirty=false;
+  document.getElementById('saveBar').classList.remove('visible');
+  renderHero(); updateSidebar(); renderColorPicker();
+  showToast('✓ تم حفظ الملف الشخصي بنجاح','ok');
+};
+
+/* ── AVATAR/BANNER ── */
+window.triggerAvatarUpload = () => document.getElementById('avatarFileInput').click();
+window.handleAvatarChange = (e) => {
+  const file=e.target.files[0]; if(!file) return;
+  const reader=new FileReader();
+  reader.onload=(ev)=>{
+    pendingAvatarBase64=ev.target.result;
+    const pcAv=document.getElementById('pcAvatar');
+    pcAv.innerHTML=`<img src="${pendingAvatarBase64}"><div class="pc-avatar-overlay"><i class="fas fa-camera"></i><span>تغيير</span></div>`;
+    const ae=document.getElementById('aePreview');
+    ae.innerHTML=`<img src="${pendingAvatarBase64}">`;
+    markDirty();
+  };
+  reader.readAsDataURL(file);
+};
+window.removeAvatar = () => {
+  pendingAvatarBase64='REMOVE';
+  ME.avatarUrl='';
+  const letter=ME.name?ME.name[0].toUpperCase():'?';
+  document.getElementById('pcAvatar').innerHTML=`${letter}<div class="pc-avatar-overlay"><i class="fas fa-camera"></i><span>تغيير</span></div>`;
+  document.getElementById('aePreview').innerHTML=letter;
+  markDirty();
+};
+
+window.triggerBannerUpload = () => document.getElementById('bannerFileInput').click();
+window.handleBannerChange = (e) => {
+  const file=e.target.files[0]; if(!file) return;
+  const reader=new FileReader();
+  reader.onload=(ev)=>{
+    pendingBannerBase64=ev.target.result;
+    document.getElementById('bannerBg').style.backgroundImage=`url(${ev.target.result})`;
+    document.getElementById('bannerBg').style.backgroundSize='cover';
+    document.getElementById('bannerBg').style.backgroundPosition='center';
+    markDirty();
+  };
+  reader.readAsDataURL(file);
+};
+
+/* ── BANNER CANVAS ANIMATION ── */
+function initBannerCanvas(){
+  const cvs=document.getElementById('bannerCanvas');
+  const ctx=cvs.getContext('2d');
+  let particles=[];
+  function resize(){cvs.width=cvs.offsetWidth;cvs.height=cvs.offsetHeight;}
+  resize(); window.addEventListener('resize',resize);
+  for(let i=0;i<60;i++){
+    particles.push({
+      x:Math.random()*cvs.width,y:Math.random()*cvs.height,
+      vx:(Math.random()-.5)*.3,vy:(Math.random()-.5)*.3,
+      r:Math.random()*2+.5,
+      c:Math.random()>.5?`rgba(61,127,255,${Math.random()*.4+.1})`:`rgba(200,168,74,${Math.random()*.2+.05})`
+    });
+  }
+  function draw(){
+    requestAnimationFrame(draw);
+    ctx.clearRect(0,0,cvs.width,cvs.height);
+    // gradient mesh
+    const grd=ctx.createRadialGradient(cvs.width*.3,cvs.height*.3,0,cvs.width*.3,cvs.height*.3,cvs.width*.6);
+    grd.addColorStop(0,'rgba(61,127,255,.08)'); grd.addColorStop(1,'transparent');
+    ctx.fillStyle=grd; ctx.fillRect(0,0,cvs.width,cvs.height);
+    // particles
+    particles.forEach(p=>{
+      p.x+=p.vx; p.y+=p.vy;
+      if(p.x<0||p.x>cvs.width)p.vx*=-1;
+      if(p.y<0||p.y>cvs.height)p.vy*=-1;
+      ctx.beginPath(); ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
+      ctx.fillStyle=p.c; ctx.fill();
+    });
+    // connecting lines
+    particles.forEach((p,i)=>{
+      for(let j=i+1;j<particles.length;j++){
+        const dx=particles[j].x-p.x, dy=particles[j].y-p.y;
+        const dist=Math.sqrt(dx*dx+dy*dy);
+        if(dist<80){
+          ctx.beginPath(); ctx.moveTo(p.x,p.y); ctx.lineTo(particles[j].x,particles[j].y);
+          ctx.strokeStyle=`rgba(61,127,255,${.12*(1-dist/80)})`; ctx.lineWidth=.5; ctx.stroke();
         }
+      }
+    });
+  }
+  draw();
+}
 
-        window.addEventListener('beforeunload', () => updateUserStatus(false));
+/* ── TABS ── */
+window.switchTab = (tab) => {
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('on'));
+  document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('on'));
+  document.getElementById('tab-'+tab).classList.add('on');
+  document.getElementById('panel-'+tab).classList.add('on');
+};
 
-        function syncUI() {
-            const d = currentUser;
-            document.getElementById('u_name').innerText = d.nickname;
-            document.getElementById('u_spec').innerText = d.specialty;
-            document.getElementById('u_img').src = d.photoURL;
-            document.getElementById('u_bio').innerText = d.bio || "لا توجد سيرة ذاتية.";
-            document.getElementById('s_xp').innerText = d.xp || 0;
-            document.getElementById('s_coins').innerText = d.coins || 0;
-            document.getElementById('v_coins').innerText = d.coins || 0;
-            document.getElementById('s_streak').innerText = d.streak || 0;
+window.copyProfileLink = () => {
+  navigator.clipboard.writeText(window.location.href);
+  showToast('✓ تم نسخ الرابط','ok');
+};
 
-            const lvl = Math.floor((d.xp || 0)/1000) + 1;
-            document.getElementById('u_lvl').innerText = `المستوى ${lvl}`;
-            document.getElementById('xp_perc').innerText = `${d.xp % 1000}/1000 XP`;
-            document.getElementById('xp_bar').style.width = (d.xp % 1000) / 10 + "%";
+function showToast(msg,type='ok'){
+  const t=document.getElementById('toast');
+  t.textContent=msg; t.className=`show ${type}`;
+  setTimeout(()=>t.classList.remove('show'),3000);
+}
+window.showToast = showToast;
+</script>
 
-            document.getElementById('in_name').value = d.nickname;
-            document.getElementById('in_spec').value = d.specialty;
-            document.getElementById('in_bio').value = d.bio || "";
-            document.getElementById('in_img').value = d.photoURL;
-            document.getElementById('in_git').value = d.github || "";
-            document.getElementById('in_link').value = d.linkedin || "";
+<script>
+const C=document.getElementById('cur'),CR=document.getElementById('curR');
+let mx=0,my=0,rx=0,ry=0;
+document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;C.style.left=mx+'px';C.style.top=my+'px';});
+(function raf(){requestAnimationFrame(raf);rx+=(mx-rx)*.13;ry+=(my-ry)*.13;CR.style.left=rx+'px';CR.style.top=ry+'px';})();
+document.querySelectorAll('a,button,.pc-avatar,.pc-btn,.tab-btn,.ach-card,.activity-item').forEach(el=>{
+  el.addEventListener('mouseenter',()=>document.body.classList.add('hov'));
+  el.addEventListener('mouseleave',()=>document.body.classList.remove('hov'));
+});
 
-            document.getElementById('lnk_git').href = d.github ? `https://${d.github}` : "#";
-            document.getElementById('lnk_link').href = d.linkedin ? `https://${d.linkedin}` : "#";
+function setLang(l){
+  document.documentElement.setAttribute('data-lang',l);
+  document.documentElement.dir=l==='ar'?'rtl':'ltr';
+  document.getElementById('btnAr').classList.toggle('on',l==='ar');
+  document.getElementById('btnEn').classList.toggle('on',l==='en');
+  localStorage.setItem('sl',l);
+}
+const _sl=localStorage.getItem('sl');if(_sl)setLang(_sl);
 
-            document.getElementById('badge_grid').innerHTML = (d.badges || ['🏆', '💻', '🚀']).map(b => `<div style="background:rgba(255,255,255,0.05); padding:10px; border-radius:15px; text-align:center; font-size:1.5rem;">${b}</div>`).join('');
-            
-            const skills = d.skills || { "Logic": 90, "UI/UX": 75, "Coding": 60 };
-            document.getElementById('skill_list').innerHTML = Object.entries(skills).map(([n,v]) => `
-                <div style="margin-bottom:15px;">
-                    <div style="display:flex; justify-content:space-between; font-size:0.8rem; margin-bottom:5px;"><span>${n}</span><span>${v}%</span></div>
-                    <div class="xp-track" style="height:8px;"><div class="xp-bar" style="width:${v}%"></div></div>
-                </div>
-            `).join('');
+function toggleMenu(){
+  const sn=document.getElementById('SIDENAV'),ov=document.getElementById('OVERLAY'),bg=document.getElementById('burger');
+  sn.classList.toggle('on');ov.classList.toggle('on');bg.classList.toggle('on');
+}
+document.addEventListener('keydown',e=>{if(e.key==='Escape'){if(document.getElementById('SIDENAV').classList.contains('on'))toggleMenu();}});
+function doLogout(){if(confirm('تسجيل الخروج؟'))location.href='login.html';}
 
-            updateFriendsCount();
-        }
-
-        function updateFriendsCount() {
-            const count = (currentUser.friends || []).length;
-            document.getElementById('friendsCount').innerText = count;
-            document.getElementById('friendsTotal').innerText = count;
-        }
-
-        // === نظام تحميل جميع المستخدمين ===
-        async function loadAllUsers() {
-            try {
-                const q = query(collection(db, "users"), limit(50));
-                const snap = await getDocs(q);
-                allUsers = [];
-                
-                snap.forEach(userDoc => {
-                    if (userDoc.id !== uid) {
-                        allUsers.push({ id: userDoc.id, ...userDoc.data() });
-                    }
-                });
-                
-                displayUsers(allUsers);
-            } catch (e) { 
-                notify("خطأ في تحميل المستخدمين", 'error'); 
-            }
-        }
-
-        function displayUsers(users) {
-            const list = document.getElementById('users_list');
-            if (users.length === 0) {
-                list.innerHTML = "<p style='text-align:center; color: #8b949e;'>لا يوجد مستخدمون متاحون</p>";
-                return;
-            }
-
-            list.innerHTML = users.map(user => {
-                const isFriend = (currentUser.friends || []).includes(user.id);
-                const hasSentRequest = (user.friendRequests || []).includes(uid);
-                const hasReceivedRequest = (currentUser.friendRequests || []).includes(user.id);
-                
-                let actionBtn = '';
-                if (isFriend) {
-                    actionBtn = `<button class="btn-action btn-danger" style="width: auto; padding: 8px 15px; font-size: 0.75rem;" onclick="removeFriend('${user.id}')">
-                        <i class="fas fa-user-minus"></i> إزالة
-                    </button>`;
-                } else if (hasSentRequest) {
-                    actionBtn = `<button class="btn-action btn-secondary" style="width: auto; padding: 8px 15px; font-size: 0.75rem;" disabled>
-                        <i class="fas fa-clock"></i> قيد الانتظار
-                    </button>`;
-                } else if (hasReceivedRequest) {
-                    actionBtn = `<button class="btn-action" style="width: auto; padding: 8px 15px; font-size: 0.75rem;" onclick="acceptFriendRequest('${user.id}')">
-                        <i class="fas fa-user-check"></i> قبول الطلب
-                    </button>`;
-                } else {
-                    actionBtn = `<button class="btn-action" style="width: auto; padding: 8px 15px; font-size: 0.75rem;" onclick="sendFriendRequest('${user.id}')">
-                        <i class="fas fa-user-plus"></i> إضافة
-                    </button>`;
-                }
-
-                const status = user.isOnline ? 
-                    '<span class="user-status status-online"><i class="fas fa-circle"></i> متصل الآن</span>' : 
-                    '<span class="user-status status-offline"><i class="fas fa-circle"></i> غير متصل</span>';
-
-                return `
-                    <div class="user-card">
-                        <img src="${user.photoURL || 'https://api.dicebear.com/7.x/bottts/svg?seed=User'}" alt="${user.nickname}">
-                        <div class="user-info">
-                            <div class="user-name">${user.nickname}</div>
-                            <div class="user-spec">${user.specialty}</div>
-                            ${status}
-                        </div>
-                        ${actionBtn}
-                    </div>
-                `;
-            }).join('');
-        }
-
-        window.filterUsers = (searchTerm) => {
-            if (!searchTerm.trim()) {
-                displayUsers(allUsers);
-                return;
-            }
-            const filtered = allUsers.filter(user => 
-                user.nickname.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                user.specialty.toLowerCase().includes(searchTerm.toLowerCase())
-            );
-            displayUsers(filtered);
-        };
-
-        // === نظام طلبات الصداقة ===
-        window.sendFriendRequest = async (targetId) => {
-            try {
-                await updateDoc(doc(db, "users", targetId), {
-                    friendRequests: arrayUnion(uid)
-                });
-                notify("تم إرسال طلب الصداقة بنجاح! ✅");
-                loadAllUsers();
-            } catch (e) {
-                notify("خطأ في إرسال الطلب", 'error');
-            }
-        };
-
-        window.acceptFriendRequest = async (friendId) => {
-            try {
-                // إضافة كلا المستخدمين لقائمة أصدقاء بعضهما
-                await updateDoc(doc(db, "users", uid), {
-                    friends: arrayUnion(friendId),
-                    friendRequests: arrayRemove(friendId)
-                });
-                
-                await updateDoc(doc(db, "users", friendId), {
-                    friends: arrayUnion(uid)
-                });
-
-                currentUser.friends = [...(currentUser.friends || []), friendId];
-                currentUser.friendRequests = (currentUser.friendRequests || []).filter(id => id !== friendId);
-                
-                notify("تمت إضافة صديق جديد! 🎉");
-                updateFriendsCount();
-                loadAllUsers();
-                loadFriendsList();
-            } catch (e) {
-                notify("خطأ في قبول الطلب", 'error');
-            }
-        };
-
-        window.removeFriend = async (friendId) => {
-            if (!confirm('هل أنت متأكد من إزالة هذا الصديق؟')) return;
-            
-            try {
-                await updateDoc(doc(db, "users", uid), {
-                    friends: arrayRemove(friendId)
-                });
-                
-                await updateDoc(doc(db, "users", friendId), {
-                    friends: arrayRemove(uid)
-                });
-
-                currentUser.friends = (currentUser.friends || []).filter(id => id !== friendId);
-                
-                notify("تمت إزالة الصديق");
-                updateFriendsCount();
-                loadAllUsers();
-                loadFriendsList();
-            } catch (e) {
-                notify("خطأ في إزالة الصديق", 'error');
-            }
-        };
-
-        // === تحميل قائمة الأصدقاء ===
-        async function loadFriendsList() {
-            const list = document.getElementById('friends_list');
-            const friends = currentUser.friends || [];
-
-            if (friends.length === 0) {
-                list.innerHTML = `
-                    <div style="text-align: center; color: var(--p); padding: 40px;">
-                        <i class="fas fa-users" style="font-size: 3rem; opacity: 0.3; margin-bottom: 15px;"></i>
-                        <p>لم تقم بإضافة أي أصدقاء بعد</p>
-                        <p style="font-size: 0.8rem; color: #8b949e; margin-top: 10px;">انتقل إلى "اكتشف مستخدمين" لإضافة أصدقاء جدد</p>
-                    </div>
-                `;
-                return;
-            }
-
-            try {
-                const friendsData = await Promise.all(
-                    friends.map(async (fid) => {
-                        const snap = await getDoc(doc(db, "users", fid));
-                        return snap.exists() ? { id: fid, ...snap.data() } : null;
-                    })
-                );
-
-                const validFriends = friendsData.filter(f => f !== null);
-
-                list.innerHTML = validFriends.map(friend => {
-                    const status = friend.isOnline ? 
-                        '<span class="user-status status-online"><i class="fas fa-circle"></i> متصل الآن</span>' : 
-                        '<span class="user-status status-offline"><i class="fas fa-circle"></i> غير متصل</span>';
-
-                    return `
-                        <div class="user-card">
-                            <img src="${friend.photoURL}" alt="${friend.nickname}">
-                            <div class="user-info">
-                                <div class="user-name">${friend.nickname}</div>
-                                <div class="user-spec">${friend.specialty}</div>
-                                ${status}
-                            </div>
-                            <div style="display: flex; gap: 8px;">
-                                <button class="btn-action" style="width: auto; padding: 8px 15px; font-size: 0.75rem;" onclick="openChat('${friend.id}')">
-                                    <i class="fas fa-comment"></i> رسالة
-                                </button>
-                                <button class="btn-action btn-danger" style="width: auto; padding: 8px 15px; font-size: 0.75rem;" onclick="removeFriend('${friend.id}')">
-                                    <i class="fas fa-user-minus"></i>
-                                </button>
-                            </div>
-                        </div>
-                    `;
-                }).join('');
-            } catch (e) {
-                notify("خطأ في تحميل الأصدقاء", 'error');
-            }
-        }
-
-        // === نظام الدردشة ===
-        window.openChat = async (friendId) => {
-            showTab('chat');
-            currentChatUser = friendId;
-
-            const friendSnap = await getDoc(doc(db, "users", friendId));
-            if (!friendSnap.exists()) return;
-
-            const friendData = friendSnap.data();
-            
-            // تحديث رأس الدردشة
-            document.getElementById('chatHeader').innerHTML = `
-                <img src="${friendData.photoURL}" style="width: 50px; height: 50px; border-radius: 50%; border: 2px solid var(--p);">
-                <div>
-                    <h4>${friendData.nickname}</h4>
-                    <p style="font-size: 0.75rem; color: var(--p);">${friendData.isOnline ? 'متصل الآن' : 'غير متصل'}</p>
-                </div>
-            `;
-
-            document.getElementById('chatInputArea').style.display = 'flex';
-
-            // تحميل الرسائل
-            loadMessages(friendId);
-        };
-
-        function loadMessages(friendId) {
-            if (chatUnsubscribe) chatUnsubscribe();
-
-            const chatId = [uid, friendId].sort().join('_');
-            const messagesRef = collection(db, "chats", chatId, "messages");
-            const q = query(messagesRef, orderBy("timestamp", "asc"));
-
-            chatUnsubscribe = onSnapshot(q, (snapshot) => {
-                const messagesDiv = document.getElementById('chatMessages');
-                messagesDiv.innerHTML = '';
-
-                if (snapshot.empty) {
-                    messagesDiv.innerHTML = `
-                        <div style="text-align: center; color: #8b949e; padding: 50px;">
-                            <i class="fas fa-comments" style="font-size: 3rem; opacity: 0.3; margin-bottom: 15px;"></i>
-                            <p>ابدأ المحادثة الآن! 💬</p>
-                        </div>
-                    `;
-                    return;
-                }
-
-                snapshot.forEach(doc => {
-                    const msg = doc.data();
-                    const isSent = msg.senderId === uid;
-                    const time = msg.timestamp ? new Date(msg.timestamp.toDate()).toLocaleTimeString('ar-SA', { hour: '2-digit', minute: '2-digit' }) : '';
-
-                    messagesDiv.innerHTML += `
-                        <div class="message ${isSent ? 'sent' : 'received'}">
-                            ${msg.text}
-                            <div class="message-time">${time}</div>
-                        </div>
-                    `;
-                });
-
-                messagesDiv.scrollTop = messagesDiv.scrollHeight;
-            });
-        }
-
-        window.sendMessage = async () => {
-            const input = document.getElementById('messageInput');
-            const text = input.value.trim();
-
-            if (!text || !currentChatUser) return;
-
-            try {
-                const chatId = [uid, currentChatUser].sort().join('_');
-                await addDoc(collection(db, "chats", chatId, "messages"), {
-                    senderId: uid,
-                    receiverId: currentChatUser,
-                    text: text,
-                    timestamp: serverTimestamp()
-                });
-
-                input.value = '';
-            } catch (e) {
-                notify("خطأ في إرسال الرسالة", 'error');
-            }
-        };
-
-        // === الاستماع لطلبات الصداقة الجديدة ===
-        function listenToFriendRequests() {
-            onSnapshot(doc(db, "users", uid), (snapshot) => {
-                if (snapshot.exists()) {
-                    const data = snapshot.data();
-                    const requests = data.friendRequests || [];
-                    
-                    if (requests.length > 0) {
-                        notify(`لديك ${requests.length} طلب صداقة جديد! 🔔`);
-                    }
-                }
-            });
-        }
-
-        // === باقي الوظائف ===
-        window.updatePreview = (url) => { 
-            if(url.trim() !== "") document.getElementById('u_img').src = url; 
-        };
-
-        window.setAvatar = (url) => {
-            document.getElementById('in_img').value = url;
-            document.getElementById('u_img').src = url;
-            notify("تم اختيار آفاتار جديد!");
-        };
-
-        window.saveEverything = async () => {
-            const updates = {
-                nickname: document.getElementById('in_name').value,
-                specialty: document.getElementById('in_spec').value,
-                bio: document.getElementById('in_bio').value,
-                photoURL: document.getElementById('in_img').value,
-                github: document.getElementById('in_git').value,
-                linkedin: document.getElementById('in_link').value
-            };
-            
-            try {
-                await updateDoc(doc(db, "users", uid), updates);
-                notify("تمت المزامنة وحفظ الهوية بنجاح! 💾");
-                setTimeout(() => location.reload(), 1000);
-            } catch (e) {
-                notify("خطأ في الحفظ", 'error');
-            }
-        };
-
-        window.buyItem = async (cost, itemName) => {
-            if(currentUser.coins >= cost) {
-                try {
-                    const newCoins = currentUser.coins - cost;
-                    await updateDoc(doc(db, "users", uid), { coins: newCoins });
-                    notify(`تم شراء ${itemName} بنجاح! 🎉`);
-                    setTimeout(() => location.reload(), 1000);
-                } catch (e) {
-                    notify("خطأ في عملية الشراء", 'error');
-                }
-            } else { 
-                notify("عذراً، رصيدك غير كافٍ! 💰", 'error'); 
-            }
-        };
-
-        window.showTab = (t, el) => {
-            document.querySelectorAll('main section').forEach(s => s.classList.add('hidden'));
-            document.getElementById(`tab-${t}`).classList.remove('hidden');
-            
-            if(el) {
-                document.querySelectorAll('.nav-link').forEach(n => n.classList.remove('active'));
-                el.classList.add('active');
-            }
-            
-            if (t === 'discover') loadAllUsers();
-            if (t === 'friends') loadFriendsList();
-        };
-
-        window.logout = () => {
-            updateUserStatus(false).then(() => {
-                signOut(auth).then(() => location.href = "login.html");
-            });
-        };
-    </script>
+// Warn before leaving with unsaved changes
+window.addEventListener('beforeunload',e=>{
+  if(window.dirty){e.preventDefault();e.returnValue='';}
+});
+</script>
 </body>
 </html>
